@@ -147,36 +147,45 @@ async function loadSummary(){
 }
 
 
-// ✅ KPI CARDS (MATCH SCREENSHOT)
 function renderCards(received, paid){
 
-  const net = received - paid;
+  // ✅ CUSTOMER VIEW LOGIC
+  const net = paid - received;
 
-  const isPositive = net >= 0;
+  const isYouWillGet = net > 0;
 
-  const label = isPositive ? "You Will Get" : "You Need to Pay";
+  const label = isYouWillGet ? "You Will Get" : "You Need to Pay";
 
-  const netColor = isPositive ? "text-white" : "text-white";
+  const balanceColor = isYouWillGet ? "text-green-400" : "text-red-400";
+
+  const balanceBg = isYouWillGet 
+    ? "bg-green-500/10 border border-green-500/30" 
+    : "bg-red-500/10 border border-red-500/30";
 
   document.getElementById("summaryCards").innerHTML = `
 
-  <!-- RECEIVED -->
-  <div class="bg-green-600 text-white p-4 rounded-xl">
+  <!-- RECEIVED (RED as per your requirement) -->
+  <div class="bg-red-600 text-white p-4 rounded-xl">
     <div class="text-sm">💰 Credit Received</div>
     <div class="text-xl font-bold">₹${received}</div>
   </div>
 
-  <!-- PAID -->
-  <div class="bg-red-600 text-white p-4 rounded-xl">
+  <!-- PAID (GREEN as per your requirement) -->
+  <div class="bg-green-600 text-white p-4 rounded-xl">
     <div class="text-sm">💸 Cash Paid</div>
     <div class="text-xl font-bold">₹${paid}</div>
   </div>
 
   <!-- BALANCE -->
-  <div class="bg-gray-800 text-white p-4 rounded-xl">
-    <div class="text-sm">📊 Net Balance</div>
-    <div class="text-lg font-bold">
-      ₹${Math.abs(net)} ${label}
+  <div class="${balanceBg} p-4 rounded-xl text-center">
+    <div class="text-sm text-gray-300">📊 Net Balance</div>
+    
+    <div class="text-xl font-bold ${balanceColor}">
+      ₹${Math.abs(net)}
+    </div>
+
+    <div class="text-xs mt-1 ${balanceColor}">
+      ${label}
     </div>
   </div>
 

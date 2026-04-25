@@ -5,51 +5,67 @@
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen p-4">
+<body class="bg-gray-100 text-gray-800 p-4">
 
 <!-- HEADER -->
-<div class="mb-6 flex justify-between items-center">
-  <div>
-    <h2 class="text-2xl font-bold">📊 Customer Dashboard</h2>
-    <p class="text-gray-400 text-sm">Live statement & balance</p>
+<div class="max-w-4xl mx-auto bg-white rounded-xl p-4 shadow">
+
+  <div class="flex justify-between items-center border-b pb-3">
+    <div class="text-xl font-bold">🏢 Ranjan</div>
+    <div class="text-sm text-gray-500">📅 <span id="today"></span></div>
   </div>
 
-  <button onclick="downloadPDF()" class="bg-blue-600 px-4 py-2 rounded-xl text-sm">
-    ⬇️ PDF
-  </button>
-</div>
+  <div class="mt-2 text-sm text-gray-600">👤 Ledger App</div>
 
-<!-- SUMMARY -->
-<div id="summaryCards" class="grid grid-cols-3 gap-3 mb-4"></div>
+  <!-- KPI CARDS -->
+  <div id="summaryCards" class="grid grid-cols-3 gap-3 mt-4"></div>
 
-<!-- PAYMENT -->
-<div id="payBox" class="bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-6 hidden">
+  <!-- TABLE -->
+  <div class="mt-6">
 
-  <h3 class="font-semibold mb-3">⚡ Pay Now</h3>
+    <div class="bg-gray-900 text-white grid grid-cols-4 p-3 rounded-t-lg text-sm font-semibold">
+      <div>📅 Date</div>
+      <div>📝 Details</div>
+      <div class="text-center">💸 Cash Paid</div>
+      <div class="text-right">💰 Credit Received</div>
+    </div>
 
-  <!-- Mobile -->
-  <a id="upiBtn" target="_blank"
-    class="hidden block text-center bg-green-600 p-3 rounded-xl mb-3">
-    💰 Pay via UPI
-  </a>
+    <div id="summary" class="bg-white divide-y"></div>
 
-  <!-- Desktop -->
-  <button id="qrBtn" onclick="showQR()"
-    class="hidden w-full bg-blue-600 p-3 rounded-xl mb-3">
-    📱 Show QR Code
-  </button>
-
-  <img id="qrImg" class="w-40 mx-auto rounded-xl hidden"/>
-</div>
-
-<!-- TRANSACTIONS -->
-<div class="bg-white/5 backdrop-blur-lg rounded-2xl p-4 shadow-lg">
-  <div class="flex justify-between mb-3">
-    <h3 class="font-semibold">Transactions</h3>
-    <span id="count" class="text-xs text-gray-400"></span>
   </div>
 
-  <div id="summary" class="space-y-3 max-h-[65vh] overflow-auto"></div>
+</div>
+
+<!-- FOOTER -->
+<div class="max-w-4xl mx-auto mt-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white p-6 rounded-xl">
+
+  <div class="font-semibold mb-4">⚡ Powered by RanSan Technology</div>
+
+  <div class="grid md:grid-cols-3 gap-6 text-sm">
+
+    <div>
+      <div class="font-semibold mb-1">🏢 Corporate Office</div>
+      <div>Shop No 1, Rahul Welfare Society,<br>Sivagami Nagar, Orlem,<br>Mumbai - 400064</div>
+    </div>
+
+    <div>
+      <div class="font-semibold mb-1">🏢 Branch Office</div>
+      <div>16/6, 2nd Floor,<br>Ramakrishna 1st Cross Street,<br>Porur, Chennai - 600116</div>
+    </div>
+
+    <div>
+      <div>📞 +91 8148610567</div>
+      <div>💬 WhatsApp: +91 8148610567</div>
+      <div>📧 ransangroups2025@gmail.com</div>
+      <div>🌐 
+        <a href="https://www.ransangroups.com" target="_blank" class="underline">
+          www.ransangroups.com
+        </a>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 <script>
@@ -60,18 +76,17 @@ const urlParams = new URLSearchParams(window.location.search);
 const customerId = urlParams.get("customer");
 const businessId = urlParams.get("bid");
 
+document.getElementById("today").innerText = new Date().toLocaleDateString();
+
 loadSummary();
 
 async function loadSummary(){
 
-  document.getElementById("summary").innerHTML = "Loading...";
-
-  const res = await fetch(`${API}?action=getCustomerTransactions&bid=${businessId}&cid=${customerId}&env=test`);
+  const res = await fetch(`${API}?action=getCustomerTransactions&bid=${businessId}&cid=${customerId}`);
   const data = await res.json();
 
-  // ✅ CUSTOMER VIEW KPI
-  let received = 0; // gave → you received
-  let paid = 0;     // got → you paid
+  let received = 0;
+  let paid = 0;
 
   data.transactions.forEach(t => {
     if(t.type === "gave") received += Number(t.amount);
@@ -79,117 +94,68 @@ async function loadSummary(){
   });
 
   renderCards(received, paid);
-  setupPayment(received, paid);
 
   let html = "";
 
   data.transactions.reverse().forEach(t => {
 
     html += `
-    <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl hover:bg-white/10 transition">
+    <div class="grid grid-cols-4 p-3 text-sm items-center">
 
-      <div>
-        <div class="text-sm font-medium">${new Date(t.date).toLocaleDateString()}</div>
-        <div class="text-xs text-gray-400">Balance ₹${t.runningBalance}</div>
+      <div>${new Date(t.date).toLocaleDateString()}</div>
+
+      <div>${t.note || "-"}</div>
+
+      <div class="text-center text-red-500 font-medium">
+        ${t.type === "got" ? "₹" + t.amount : ""}
       </div>
 
-      <div class="text-right">
-
-        <div class="font-bold ${t.type === 'gave' ? 'text-red-400' : 'text-green-400'}">
-          ${t.type === 'gave' ? '+₹' + t.amount : '-₹' + t.amount}
-        </div>
-
-        <div class="text-xs text-gray-400">
-          ${t.type === 'gave' ? 'You Received' : 'You Paid'}
-        </div>
-
+      <div class="text-right text-green-600 font-medium">
+        ${t.type === "gave" ? "₹" + t.amount : ""}
       </div>
 
-    </div>`;
+    </div>
+    `;
   });
 
-  document.getElementById("summary").innerHTML = html || "No Transactions";
-  document.getElementById("count").innerText = data.transactions.length + " entries";
+  document.getElementById("summary").innerHTML = html || "No Data";
 }
 
-// ✅ UPDATED KPI WITH REVERSED BALANCE
+
+// ✅ KPI CARDS (MATCH SCREENSHOT)
 function renderCards(received, paid){
 
-  // 🔥 REVERSED BALANCE (Customer View)
-  const net = paid - received;
+  const net = received - paid;
 
   const isPositive = net >= 0;
 
-  const netColor = isPositive ? "text-red-400" : "text-green-400";
+  const label = isPositive ? "You Will Get" : "You Need to Pay";
 
-  const label = isPositive ? "You Need to Pay" : "You Will Get";
-
-  const badge = isPositive
-    ? `<span class="bg-red-500/20 text-red-400 px-2 py-1 rounded-full text-xs">${label}</span>`
-    : `<span class="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs">${label}</span>`;
+  const netColor = isPositive ? "text-white" : "text-white";
 
   document.getElementById("summaryCards").innerHTML = `
 
-  <div class="bg-red-500/10 p-4 rounded-2xl text-center">
-    <div class="text-xs text-gray-400">You Received</div>
-    <div class="text-lg font-bold text-red-400">₹${received}</div>
+  <!-- RECEIVED -->
+  <div class="bg-green-600 text-white p-4 rounded-xl">
+    <div class="text-sm">💰 Credit Received</div>
+    <div class="text-xl font-bold">₹${received}</div>
   </div>
 
-  <div class="bg-green-500/10 p-4 rounded-2xl text-center">
-    <div class="text-xs text-gray-400">You Paid</div>
-    <div class="text-lg font-bold text-green-400">₹${paid}</div>
+  <!-- PAID -->
+  <div class="bg-red-600 text-white p-4 rounded-xl">
+    <div class="text-sm">💸 Cash Paid</div>
+    <div class="text-xl font-bold">₹${paid}</div>
   </div>
 
-  <div class="bg-white/10 p-4 rounded-2xl text-center">
-    <div class="text-xs text-gray-400">Balance</div>
-    <div class="text-lg font-bold ${netColor}">
-      ₹${Math.abs(net)}
+  <!-- BALANCE -->
+  <div class="bg-gray-800 text-white p-4 rounded-xl">
+    <div class="text-sm">📊 Net Balance</div>
+    <div class="text-lg font-bold">
+      ₹${Math.abs(net)} ${label}
     </div>
-    <div class="mt-1">${badge}</div>
   </div>
 
   `;
-}
-
-// ✅ PAYMENT BASED ON REVERSED BALANCE
-function setupPayment(received, paid){
-
-  const net = paid - received;
-
-  // show only if customer needs to pay
-  if(net > 0){
-
-    const amount = net;
-
-    const upi = "sudhakarrn0711@okicici"; // change later dynamic
-    const name = "Business";
-
-    const upiLink = `upi://pay?pa=${upi}&pn=${name}&am=${amount}&cu=INR`;
-
-    document.getElementById("payBox").classList.remove("hidden");
-
-    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    if(isMobile){
-      const btn = document.getElementById("upiBtn");
-      btn.href = upiLink;
-      btn.classList.remove("hidden");
-    } else {
-      document.getElementById("qrBtn").classList.remove("hidden");
-      window.currentUPI = upiLink;
-    }
-  }
-}
-
-function showQR(){
-  document.getElementById("qrImg").src =
-    `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.currentUPI)}`;
-
-  document.getElementById("qrImg").classList.remove("hidden");
-}
-
-function downloadPDF(){
-  window.print();
 }
 
 </script>

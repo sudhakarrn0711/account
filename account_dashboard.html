@@ -13,12 +13,37 @@
   <div class="flex justify-between items-center border-b pb-3">
     <div class="text-xl font-bold">🏢 Ranjan</div>
     <div class="text-sm text-gray-500">📅 <span id="today"></span></div>
+
+  <button onclick="downloadPDF()" class="bg-blue-600 px-4 py-2 rounded-xl text-sm">
+    ⬇️ PDF
+  </button>
+
   </div>
 
   <div class="mt-2 text-sm text-gray-600">👤 Ledger App</div>
 
   <!-- KPI CARDS -->
   <div id="summaryCards" class="grid grid-cols-3 gap-3 mt-4"></div>
+
+<!-- PAYMENT -->
+<div id="payBox" class="bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-6 hidden">
+
+  <h3 class="font-semibold mb-3">⚡ Pay Now</h3>
+
+  <!-- Mobile -->
+  <a id="upiBtn" target="_blank"
+    class="hidden block text-center bg-green-600 p-3 rounded-xl mb-3">
+    💰 Pay via UPI
+  </a>
+
+  <!-- Desktop -->
+  <button id="qrBtn" onclick="showQR()"
+    class="hidden w-full bg-blue-600 p-3 rounded-xl mb-3">
+    📱 Show QR Code
+  </button>
+
+  <img id="qrImg" class="w-40 mx-auto rounded-xl hidden"/>
+</div>
 
   <!-- TABLE -->
   <div class="mt-6">
@@ -156,6 +181,47 @@ function renderCards(received, paid){
   </div>
 
   `;
+}
+
+// ✅ PAYMENT BASED ON REVERSED BALANCE
+function setupPayment(received, paid){
+
+  const net = paid - received;
+
+  // show only if customer needs to pay
+  if(net > 0){
+
+    const amount = net;
+
+    const upi = "sudhakarrn0711@okicici"; // change later dynamic
+    const name = "Business";
+
+    const upiLink = `upi://pay?pa=${upi}&pn=${name}&am=${amount}&cu=INR`;
+
+    document.getElementById("payBox").classList.remove("hidden");
+
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if(isMobile){
+      const btn = document.getElementById("upiBtn");
+      btn.href = upiLink;
+      btn.classList.remove("hidden");
+    } else {
+      document.getElementById("qrBtn").classList.remove("hidden");
+      window.currentUPI = upiLink;
+    }
+  }
+}
+
+function showQR(){
+  document.getElementById("qrImg").src =
+    `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.currentUPI)}`;
+
+  document.getElementById("qrImg").classList.remove("hidden");
+}
+
+function downloadPDF(){
+  window.print();
 }
 
 </script>

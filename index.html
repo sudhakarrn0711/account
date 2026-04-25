@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <script src="asset/account/account.js" defer></script>
+  <script src="asset/account/cashbook.js" defer></script>
+
+  <script src="asset/account/mobile.js" defer></script>
+
+
+  <link rel="stylesheet" href="asset/account/account.css">
+
+</head>
+
+<body id="appRoot" class="flex h-screen overflow-hidden">
+
+  <!-- 🔐 LOGIN PROTECTION -->
+  <script>
+    // 🔐 Force logout on refresh
+    if (performance.navigation.type === 1) {
+      localStorage.removeItem("isLoggedIn");
+    }
+
+    // Login check
+    if (sessionStorage.getItem("isLoggedIn") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+
+
+  <!-- ================= SIDEBAR ================= -->
+  <div id="sidebar" class="w-64 bg-[#0f1b2e] p-4 flex flex-col">
+
+    <h1 class="text-xl font-bold mb-3">Ledger App</h1>
+
+    <!-- ENV -->
+    <div class="flex items-center gap-2 mb-3">
+      <span class="text-xs">TEST</span>
+      <label class="switch">
+        <input type="checkbox" id="envToggle">
+        <span class="slider"></span>
+      </label>
+      <span class="text-xs">LIVE</span>
+    </div>
+
+    <!-- BUSINESS -->
+    <select id="businessSelect" class="w-full p-2 bg-black mb-2"></select>
+    <button onclick="openBusinessModal()" class="bg-green-600 p-2 mb-3">+ Business</button>
+
+    <!-- MENU -->
+    <button onclick="openCustomers()" class="p-2 bg-blue-600 rounded mb-2">Customers</button>
+    <button onclick="openCashbook()" class="p-2 mb-2">Cashbook</button>
+    <button onclick="openSettings()" class="p-2">Settings</button>
+
+  </div>
+
+  <!-- ================= MAIN ================= -->
+  <div class="flex flex-1 relative overflow-hidden">
+
+    <!-- CUSTOMER LIST -->
+    <!-- LEFT PANEL -->
+    <div id="leftPanel" class="w-full md:w-1/3 border-r border-gray-700 flex flex-col
+  absolute md:relative inset-0 bg-[#0b1220] z-20
+  transition duration-300">
+
+      <!-- ================= CUSTOMERS ================= -->
+      <div id="customersSection" class="flex flex-col h-full">
+
+        <!-- HEADER -->
+        <div class="p-3 border-b border-gray-700 flex justify-between items-center sticky top-0 bg-[#0b1220] z-10">
+          <span>Customers</span>
+
+          <div class="flex gap-2">
+
+            <!-- ADD CUSTOMER -->
+            <button onclick="openAddCustomer()" class="iconBtn">
+              <i data-lucide="user-plus"></i>
+              <span class="tooltip">Add Customer (Alt + N)</span>
+            </button>
+
+            <!-- BULK UPLOAD -->
+            <button onclick="document.getElementById('excelFile').click()" class="iconBtn">
+              <i data-lucide="upload"></i>
+              <span class="tooltip">Bulk Upload (Alt + U)</span>
+            </button>
+
+            <!-- DOWNLOAD SAMPLE -->
+            <button onclick="downloadSampleExcel()" class="iconBtn">
+              <i data-lucide="download"></i>
+              <span class="tooltip">Download Sample</span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- DRAG & DROP -->
+        <div id="dropZone" class="border-2 border-dashed border-gray-500 p-4 text-center rounded m-2 cursor-pointer">
+          📂 Drag & Drop or Click to Upload
+        </div>
+
+        <input type="file" id="excelFile" hidden />
+
+        <!-- SEARCH -->
+        <input id="searchBox" placeholder="Search name or phone" class="w-full p-2 bg-black mt-2">
+
+        <!-- LIST -->
+        <div id="customerList" class="flex-1 overflow-auto"></div>
+
+      </div>
+
+      <!-- ================= CASHBOOK ================= -->
+      <div id="cashbookSection" class="hidden flex flex-col h-full">
+
+        <div class="p-3 border-b border-gray-700 flex justify-between">
+          <span>💰 Cashbook</span>
+          <div class="flex gap-2">
+            <button onclick="sortAccounts('az')" class="bg-gray-700 px-2 py-1 rounded text-xs">A–Z</button>
+            <button onclick="sortAccounts('balance')" class="bg-gray-700 px-2 py-1 rounded text-xs">₹</button>
+            <button onclick="openAddAccount()" class="bg-blue-600 px-3 py-1 rounded">+</button>
+          </div>
+
+        </div>
+
+        <!-- ✅ SEARCH INPUT -->
+        <input id="searchAccount" placeholder="Search account..." oninput="searchAccounts(this.value)"
+          class="w-full p-2 bg-black border border-gray-700 rounded text-sm" />
+
+        <div id="cashbookList" class="flex-1 overflow-auto"></div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div id="rightPanel" class="w-full md:flex-1 flex flex-col h-full
+  absolute md:relative inset-0 bg-[#0b1220]
+  translate-x-full md:translate-x-0
+  transition duration-300 z-30">
+      Select customer
+    </div>
+
+  </div>
+
+  <!-- ================= MODAL ================= -->
+  <div id="modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden
+         flex items-center justify-center z-[9999]">
+  </div>
+
+
+
+
+  <div class="fab md:hidden" onclick="openAddCustomer()">＋</div>
+
+  <div id="toast" class="fixed bottom-5 right-5 hidden z-[9999]">
+    <div id="toastMsg" class="px-4 py-3 rounded-lg shadow-lg text-white bg-black/80 backdrop-blur">
+    </div>
+  </div>
+
+  <script>
+    function showToast(msg, type = "success") {
+
+      const toast = document.getElementById("toast");
+      const box = document.getElementById("toastMsg");
+
+      box.innerText = msg;
+
+      box.className = `
+    px-4 py-3 rounded-lg shadow-lg text-white backdrop-blur
+    ${type === "error" ? "bg-red-600/90" : "bg-green-600/90"}
+  `;
+
+      toast.classList.remove("hidden");
+
+      setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 2000);
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+
+function openCustomersMobile() {
+  showListPanel();     // ✅ just show list
+  openCustomers();     // existing function
+}
+
+function openCashbookMobile() {
+  showListPanel();     // ✅ same behavior
+  openCashbook();
+}
+
+
+  </script>
+
+
+
+
+
+
+  <div id="uploadModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50">
+    <div class="bg-gray-900 p-6 rounded-2xl w-80 text-center">
+
+      <h3 class="text-lg font-bold mb-3">Uploading Customers</h3>
+
+      <div class="w-full bg-gray-700 rounded-full h-3 mb-3">
+        <div id="uploadBar" class="bg-green-500 h-3 rounded-full" style="width:0%"></div>
+      </div>
+
+      <p id="uploadText" class="text-sm text-gray-300 mb-2">Starting...</p>
+
+      <p id="uploadCount" class="text-xs text-gray-400">0 / 0</p>
+
+    </div>
+  </div>
+
+
+  <div id="previewModal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50">
+    <div class="bg-gray-900 p-5 rounded-xl w-[90%] max-w-3xl">
+
+      <h3 class="text-lg font-bold mb-3">Preview Upload</h3>
+
+      <div class="max-h-80 overflow-auto border border-gray-700">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-800">
+              <th class="p-2">Name</th>
+              <th class="p-2">Phone</th>
+              <th class="p-2">Language</th> <!-- ✅ ADD THIS -->
+              <th class="p-2">Status</th>
+            </tr>
+          </thead>
+          <tbody id="previewTable"></tbody>
+        </table>
+      </div>
+
+      <div class="flex justify-end gap-2 mt-4">
+        <button onclick="closePreview()" class="bg-gray-600 px-4 py-2 rounded">Cancel</button>
+        <button type="button" onclick="confirmUpload(this)"
+          class="bg-green-600 px-4 py-2 rounded flex items-center gap-2">
+
+          <span class="upload-text">Upload</span>
+
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+
+  <div id="sidebarOverlay" class="hidden fixed inset-0 bg-black/50 z-40"></div>
+
+  <div id="bottomNav"
+    class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 flex justify-around py-2 md:hidden z-50">
+
+    <button onclick="openCustomersMobile()" class="flex flex-col items-center text-xs">
+      <i data-lucide="users"></i>
+      Customers
+    </button>
+
+    <button onclick="openCashbookMobile()" class="flex flex-col items-center text-xs">
+      <i data-lucide="wallet"></i>
+      Cashbook
+    </button>
+
+    <button onclick="toggleSidebar()" class="flex flex-col items-center text-xs">
+      <i data-lucide="menu"></i>
+      Menu
+    </button>
+
+  </div>
+
+
+
+  
+</body>
+
+</html>

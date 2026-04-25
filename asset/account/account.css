@@ -1,0 +1,326 @@
+
+    body {
+      background: #0b1220;
+      color: white;
+    }
+
+    /* MOBILE SIDEBAR */
+/* MOBILE PANEL FULL SCREEN FIX */
+@media(max-width:768px){
+
+  #leftPanel,
+  #rightPanel{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #0b1220;
+    z-index: 30;
+  }
+
+  #rightPanel{
+    z-index: 40;
+  }
+}
+
+    /* FAB BUTTON */
+    .fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #2563eb;
+      padding: 14px;
+      border-radius: 50%;
+      z-index: 60;
+    }
+
+    /* CARD UI */
+    .card {
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 10px;
+    }
+
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 20px;
+    }
+
+    .switch input {
+      display: none;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      background: #333;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      content: "";
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 2px;
+      top: 2px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+
+    input:checked+.slider {
+      background: #22c55e;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(20px);
+    }
+
+
+    .txnCard {
+      width: 100%;
+      touch-action: pan-y;
+      /* prevent scroll conflict */
+    }
+  
+    /* ICON BUTTON */
+.iconBtn {
+  position: relative;
+  background: #1f2937; /* gray-800 */
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.iconBtn:hover {
+  background: #374151; /* gray-700 */
+}
+
+/* TOOLTIP */
+.tooltip {
+  position: absolute;
+  bottom: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: black;
+  color: white;
+  font-size: 11px;
+  padding: 3px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+
+.iconBtn:hover .tooltip {
+  opacity: 1;
+}
+
+
+/* MOBILE PANEL FIX */
+@media(max-width:768px){
+
+  #leftPanel, #rightPanel{
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+
+}
+
+/* FAB UPGRADE */
+.fab {
+  position: fixed;
+  bottom: 70px;
+  right: 20px;
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  padding: 16px;
+  border-radius: 50%;
+  font-size: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  z-index: 60;
+}
+
+/* TOUCH FRIENDLY */
+.iconBtn {
+  padding: 12px;
+  border-radius: 10px;
+}
+
+/* PREVENT IOS ZOOM */
+input, select, textarea {
+  font-size: 16px;
+}
+
+
+/* ================= SAFE MOBILE UI ================= */
+
+
+/* ✅ USE THIS INSTEAD */
+.mobile-ui #sidebar {
+  position: fixed;
+  left: -260px;
+  top: 0;
+  height: 100%;
+  z-index: 60;
+  transition: 0.3s;
+}
+
+.mobile-ui #sidebar.open {
+  left: 0;
+}
+
+#sidebarOverlay {
+  display: none;
+}
+
+#sidebarOverlay.show {
+  display: block;
+}
+
+
+/* MOBILE SLIDE SYSTEM */
+.mobile-ui #leftPanel {
+  transform: translateX(0);
+}
+
+.mobile-ui #rightPanel {
+  transform: translateX(100%);
+}
+
+.mobile-ui #leftPanel,
+.mobile-ui #rightPanel {
+  transition: transform 0.3s ease;
+}
+
+/* HEADER */
+.mobile-ui .mobile-header {
+  position: sticky;
+  top: 0;
+  background: #0f172a;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  border-bottom: 1px solid #1f2937;
+}
+
+/* FLOATING BUTTON */
+.mobile-ui .mobile-fab {
+  position: fixed;
+  bottom: 80px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999;
+}
+
+.mobile-ui .mobile-fab button {
+  padding: 12px 16px;
+  border-radius: 30px;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
+.mobile-ui .fab-green {
+  background: #16a34a;
+}
+
+.mobile-ui .fab-red {
+  background: #dc2626;
+}
+
+/* BOTTOM NAV */
+.mobile-ui .mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background: #020617;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #1f2937;
+  z-index: 9999;
+}
+
+.mobile-ui .mobile-nav button {
+  font-size: 12px;
+  color: #aaa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* SAFE CARD (NO GLOBAL OVERRIDE) */
+/* MOBILE SWIPE FIX */
+.mobile-ui .txnCard {
+  position: relative;
+  overflow: hidden;
+}
+
+.mobile-ui .txnCard > div:last-child {
+  position: relative;
+  z-index: 10;
+  background: #0b1220;
+}
+
+.mobile-ui .absolute.right-0 {
+  width: 110px !important; /* reduced from 140 */
+}
+
+.mobile-ui .absolute.right-0 button {
+  width: 55px !important;
+}
+
+.mobile-ui #rightPanel {
+  padding-bottom: 100px; /* prevents bottom overlap */
+}
+
+/* smoother feel while swiping */
+.mobile-ui #rightPanel {
+  will-change: transform;
+}
+
+#sidebar.open {
+  left: 0;
+}
+
+.mobile-ui .mobile-hide {
+  display: none !important;
+}
+
+.mobile-fab {
+  display: none;
+}
+
+.mobile-ui .mobile-fab {
+  display: flex;
+}
+
+.mobile-ui .fab {
+  display: none !important;
+}

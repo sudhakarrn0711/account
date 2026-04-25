@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gradient-to-br from-black via-gray-900 to-black text-white min-h-screen p-4">
+
+<!-- HEADER -->
+<div class="mb-6 flex justify-between items-center">
+  <div>
+    <h2 class="text-2xl font-bold">📊 Customer Dashboard</h2>
+    <p class="text-gray-400 text-sm">Live statement & balance</p>
+  </div>
+
+  <button onclick="downloadPDF()" class="bg-blue-600 px-4 py-2 rounded-xl text-sm">
+    ⬇️ PDF
+  </button>
+</div>
+
+<!-- SUMMARY -->
+<div id="summaryCards" class="grid grid-cols-3 gap-3 mb-4"></div>
+
+<!-- PAYMENT -->
+<div id="payBox" class="bg-white/5 backdrop-blur-lg rounded-2xl p-4 mb-6 hidden">
+
+  <h3 class="font-semibold mb-3">⚡ Pay Now</h3>
+
+  <!-- Mobile -->
+  <a id="upiBtn" target="_blank"
+    class="hidden block text-center bg-green-600 p-3 rounded-xl mb-3">
+    💰 Pay via UPI
+  </a>
+
+  <!-- Desktop -->
+  <button id="qrBtn" onclick="showQR()"
+    class="hidden w-full bg-blue-600 p-3 rounded-xl mb-3">
+    📱 Show QR Code
+  </button>
+
+  <img id="qrImg" class="w-40 mx-auto rounded-xl hidden"/>
+</div>
+
+<!-- TRANSACTIONS -->
+<div class="bg-white/5 backdrop-blur-lg rounded-2xl p-4 shadow-lg">
+  <div class="flex justify-between mb-3">
+    <h3 class="font-semibold">Transactions</h3>
+    <span id="count" class="text-xs text-gray-400"></span>
+  </div>
+
+  <div id="summary" class="space-y-3 max-h-[65vh] overflow-auto"></div>
+</div>
+
+<script>
+
+const API = "https://script.google.com/macros/s/AKfycbyYmkzAlMa0Z0UMTYGaBxTSaxvIvC7ZqegAVZfYNJJdxTeRWbnrVEF5oHBCrmDos_Q/exec";
+
+const urlParams = new URLSearchParams(window.location.search);
+const customerId = urlParams.get("customer");
+const businessId = urlParams.get("bid");
+
+loadSummary();
+
+async function loadSummary(){
+
+  document.getElementById("summary").innerHTML = "Loading...";
+
+  const res = await fetch(`${API}?action=getCustomerTransactions&bid=${businessId}&cid=${customerId}&env=test`);
+  const data = await res.json();
+
+  // ✅ CUSTOMER VIEW KPI
+  let received = 0; // gave → you received
+  let paid = 0;     // got → you paid
+
+  data.transactions.forEach(t => {
+    if(t.type === "gave") received += Number(t.amount);
+    else paid += Number(t.amount);
+  });
+
+  renderCards(received, paid);
+  setupPayment(received, paid);
+
+  let html = "";
+
+  data.transactions.reverse().forEach(t => {
+
+    html += `
+    <div class="flex justify-between items-center bg-white/5 p-3 rounded-xl hover:bg-white/10 transition">
+
+      <div>
+        <div class="text-sm font-medium">${new Date(t.date).toLocaleDateString()}</div>
+        <div class="text-xs text-gray-400">Balance ₹${t.runningBalance}</div>
+      </div>
+
+      <div class="text-right">
+
+        <div class="font-bold ${t.type === 'gave' ? 'text-red-400' : 'text-green-400'}">
+          ${t.type === 'gave' ? '+₹' + t.amount : '-₹' + t.amount}
+        </div>
+
+        <div class="text-xs text-gray-400">
+          ${t.type === 'gave' ? 'You Received' : 'You Paid'}
+        </div>
+
+      </div>
+
+    </div>`;
+  });
+
+  document.getElementById("summary").innerHTML = html || "No Transactions";
+  document.getElementById("count").innerText = data.transactions.length + " entries";
+}
+
+// ✅ UPDATED KPI WITH REVERSED BALANCE
+function renderCards(received, paid){
+
+  // 🔥 REVERSED BALANCE (Customer View)
+  const net = paid - received;
+
+  const isPositive = net >= 0;
+
+  const netColor = isPositive ? "text-red-400" : "text-green-400";
+
+  const label = isPositive ? "You Need to Pay" : "You Will Get";
+
+  const badge = isPositive
+    ? `<span class="bg-red-500/20 text-red-400 px-2 py-1 rounded-full text-xs">${label}</span>`
+    : `<span class="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs">${label}</span>`;
+
+  document.getElementById("summaryCards").innerHTML = `
+
+  <div class="bg-red-500/10 p-4 rounded-2xl text-center">
+    <div class="text-xs text-gray-400">You Received</div>
+    <div class="text-lg font-bold text-red-400">₹${received}</div>
+  </div>
+
+  <div class="bg-green-500/10 p-4 rounded-2xl text-center">
+    <div class="text-xs text-gray-400">You Paid</div>
+    <div class="text-lg font-bold text-green-400">₹${paid}</div>
+  </div>
+
+  <div class="bg-white/10 p-4 rounded-2xl text-center">
+    <div class="text-xs text-gray-400">Balance</div>
+    <div class="text-lg font-bold ${netColor}">
+      ₹${Math.abs(net)}
+    </div>
+    <div class="mt-1">${badge}</div>
+  </div>
+
+  `;
+}
+
+// ✅ PAYMENT BASED ON REVERSED BALANCE
+function setupPayment(received, paid){
+
+  const net = paid - received;
+
+  // show only if customer needs to pay
+  if(net > 0){
+
+    const amount = net;
+
+    const upi = "sudhakarrn0711@okicici"; // change later dynamic
+    const name = "Business";
+
+    const upiLink = `upi://pay?pa=${upi}&pn=${name}&am=${amount}&cu=INR`;
+
+    document.getElementById("payBox").classList.remove("hidden");
+
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if(isMobile){
+      const btn = document.getElementById("upiBtn");
+      btn.href = upiLink;
+      btn.classList.remove("hidden");
+    } else {
+      document.getElementById("qrBtn").classList.remove("hidden");
+      window.currentUPI = upiLink;
+    }
+  }
+}
+
+function showQR(){
+  document.getElementById("qrImg").src =
+    `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.currentUPI)}`;
+
+  document.getElementById("qrImg").classList.remove("hidden");
+}
+
+function downloadPDF(){
+  window.print();
+}
+
+</script>
+
+</body>
+</html>

@@ -3,9 +3,18 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  #summaryCards > div:hover {
+    transform: translateY(-3px);
+    transition: 0.3s ease;
+  }
+</style>
+
 </head>
 
-<body class="bg-gray-100 text-gray-800 p-4">
+
+<body class="bg-gray-100 text-gray-800 p-4 pb-24">
 
 <!-- HEADER -->
 <div class="max-w-4xl mx-auto bg-white rounded-xl p-4 shadow">
@@ -51,8 +60,8 @@
     <div class="bg-gray-900 text-white grid grid-cols-4 p-3 rounded-t-lg text-sm font-semibold">
       <div>📅 Date</div>
       <div>📝 Details</div>
-      <div class="text-center">💸 Cash Paid</div>
       <div class="text-right">💰 Credit Received</div>
+      <div class="text-center">💸 Cash Paid</div>      
     </div>
 
     <div id="summary" class="bg-white divide-y"></div>
@@ -62,31 +71,46 @@
 </div>
 
 <!-- FOOTER -->
-<div class="max-w-4xl mx-auto mt-6 bg-gradient-to-r from-gray-900 to-gray-800 text-white p-6 rounded-xl">
+<div class="max-w-4xl mx-auto mt-8">
 
-  <div class="font-semibold mb-4">⚡ Powered by RanSan Technology</div>
+  <div class="bg-gradient-to-br from-gray-900 to-black text-white 
+              rounded-2xl px-6 py-6 shadow-lg border border-white/10">
 
-  <div class="grid md:grid-cols-3 gap-6 text-sm">
+    <div class="grid md:grid-cols-3 gap-6 items-center">
 
-    <div>
-      <div class="font-semibold mb-1">🏢 Corporate Office</div>
-      <div>Shop No 1, Rahul Welfare Society,<br>Sivagami Nagar, Orlem,<br>Mumbai - 400064</div>
-    </div>
-
-    <div>
-      <div class="font-semibold mb-1">🏢 Branch Office</div>
-      <div>16/6, 2nd Floor,<br>Ramakrishna 1st Cross Street,<br>Porur, Chennai - 600116</div>
-    </div>
-
-    <div>
-      <div>📞 +91 8148610567</div>
-      <div>💬 WhatsApp: +91 8148610567</div>
-      <div>📧 ransangroups2025@gmail.com</div>
-      <div>🌐 
-        <a href="https://www.ransangroups.com" target="_blank" class="underline">
-          www.ransangroups.com
-        </a>
+      <!-- BRAND -->
+      <div>
+        <div class="text-lg font-semibold">⚡ RanSan Technology</div>
+        <div class="text-xs text-gray-400 mt-1">
+          Smart Ledger & Business Solutions
+        </div>
       </div>
+
+      <!-- CONTACT (MINIMAL) -->
+      <div class="text-sm text-gray-300 space-y-1">
+        <div>📞 +91 8148610567</div>
+        <div>📧 ransangroups2025@gmail.com</div>
+      </div>
+
+      <!-- WEBSITE (HIGHLIGHT) -->
+      <div class="text-right md:text-right">
+
+        <a href="https://www.ransangroups.com" target="_blank"
+           class="inline-flex items-center gap-2 
+                  bg-white/10 hover:bg-white/20 
+                  px-4 py-2 rounded-xl text-sm transition">
+
+          🌐 www.ransangroups.com
+
+        </a>
+
+      </div>
+
+    </div>
+
+    <!-- DIVIDER -->
+    <div class="border-t border-white/10 mt-6 pt-4 text-center text-xs text-gray-500">
+      © 2025 RanSan Groups. All rights reserved.
     </div>
 
   </div>
@@ -145,6 +169,10 @@ async function loadSummary(){
   });
 
   document.getElementById("summary").innerHTML = html || "No Data";
+
+  updateMobileFooter(received, paid);
+  openPaymentDrawer(amount);
+
 }
 
 
@@ -156,40 +184,67 @@ function renderCards(received, paid){
 
   const label = isYouWillGet ? "You Will Get" : "You Need to Pay";
 
-  const amountColor = isYouWillGet ? "text-green-500" : "text-red-500";
+  const amountColor = isYouWillGet ? "text-green-400" : "text-red-400";
+
+  const arrow = isYouWillGet 
+    ? `<span class="text-green-400 text-lg">↑</span>` 
+    : `<span class="text-red-400 text-lg">↓</span>`;
 
   const badge = isYouWillGet
-    ? `<span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-medium">You Will Get</span>`
-    : `<span class="bg-red-100 text-red-700 px-2 py-1 rounded-full text-xs font-medium">You Need to Pay</span>`;
+    ? `<span class="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-xs">You Will Get</span>`
+    : `<span class="bg-red-500/20 text-red-300 px-3 py-1 rounded-full text-xs">You Need to Pay</span>`;
+
+  const glass = `
+    relative overflow-hidden
+    bg-black/70
+    backdrop-blur-xl
+    border border-white/10
+    rounded-2xl p-4
+    shadow-[0_10px_30px_rgba(0,0,0,0.6)]
+  `;
 
   document.getElementById("summaryCards").innerHTML = `
 
   <!-- RECEIVED -->
-  <div class="bg-red-600 text-white p-4 rounded-xl">
-    <div class="text-sm">💰 Credit Received</div>
-    <div class="text-xl font-bold">₹${received}</div>
+  <div class="${glass}">
+    <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-20"></div>
+
+    <div class="relative z-10">
+      <div class="text-xs text-gray-300">💰 Credit Received</div>
+      <div class="text-xl font-bold text-red-400 mt-1">₹${received}</div>
+    </div>
   </div>
 
   <!-- PAID -->
-  <div class="bg-green-600 text-white p-4 rounded-xl">
-    <div class="text-sm">💸 Cash Paid</div>
-    <div class="text-xl font-bold">₹${paid}</div>
+  <div class="${glass}">
+    <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-20"></div>
+
+    <div class="relative z-10">
+      <div class="text-xs text-gray-300">💸 Cash Paid</div>
+      <div class="text-xl font-bold text-green-400 mt-1">₹${paid}</div>
+    </div>
   </div>
 
   <!-- BALANCE -->
-  <div class="bg-white border p-4 rounded-xl text-center shadow-sm">
-    
-    <div class="text-sm text-gray-500">📊 Net Balance</div>
+  <div class="${glass}">
+    <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-20"></div>
 
-    <div class="text-xl font-bold ${amountColor}">
-      ₹${Math.abs(net)}
+    <div class="relative z-10 text-center">
+      <div class="text-xs text-gray-300">📊 Net Balance</div>
+
+      <div class="flex justify-center items-center gap-2 mt-1">
+        ${arrow}
+        <div class="text-xl font-bold ${amountColor}">
+          ₹${Math.abs(net)}
+        </div>
+      </div>
+
+      <div class="mt-2">
+        ${badge}
+      </div>
     </div>
-
-    <div class="mt-2">
-      ${badge}
-    </div>
-
   </div>
+
   `;
 }
 
@@ -198,7 +253,16 @@ function setupPayment(received, paid){
 
   const net = paid - received;
 
-  // ❗ SHOW ONLY WHEN USER NEEDS TO PAY
+  const payBox = document.getElementById("payBox");
+  const upiBtn = document.getElementById("upiBtn");
+  const qrBtn = document.getElementById("qrBtn");
+
+  // RESET FIRST (VERY IMPORTANT)
+  payBox.classList.add("hidden");
+  upiBtn.classList.add("hidden");
+  qrBtn.classList.add("hidden");
+
+  // ✅ SHOW ONLY WHEN USER NEEDS TO PAY
   if(net < 0){
 
     const amount = Math.abs(net);
@@ -208,37 +272,204 @@ function setupPayment(received, paid){
 
     const upiLink = `upi://pay?pa=${upi}&pn=${name}&am=${amount}&cu=INR`;
 
-    document.getElementById("payBox").classList.remove("hidden");
+    payBox.classList.remove("hidden");
 
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
     if(isMobile){
-      const btn = document.getElementById("upiBtn");
-      btn.href = upiLink;
-      btn.classList.remove("hidden");
+      upiBtn.href = upiLink;
+      upiBtn.classList.remove("hidden");
     } else {
-      document.getElementById("qrBtn").classList.remove("hidden");
+      qrBtn.classList.remove("hidden");
       window.currentUPI = upiLink;
     }
-
-  } else {
-    // ✅ HIDE when not needed
-    document.getElementById("payBox").classList.add("hidden");
   }
 }
 
 function showQR(){
-  document.getElementById("qrImg").src =
-    `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.currentUPI)}`;
 
-  document.getElementById("qrImg").classList.remove("hidden");
+  const img = document.getElementById("qrImg");
+  const btn = document.getElementById("qrBtn");
+
+  // Toggle
+  if(img.classList.contains("hidden")){
+
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(window.currentUPI)}`;
+    img.classList.remove("hidden");
+
+    btn.innerText = "❌ Hide QR Code";
+
+  } else {
+
+    img.classList.add("hidden");
+
+    btn.innerText = "📱 Show QR Code";
+  }
 }
 
 function downloadPDF(){
   window.print();
 }
 
+
+let lastScroll = 0;
+const footer = document.getElementById("mobileFooter");
+
+window.addEventListener("scroll", () => {
+  const current = window.pageYOffset;
+
+  if (current > lastScroll) {
+    footer.style.transform = "translateY(100%)"; // hide
+  } else {
+    footer.style.transform = "translateY(0)"; // show
+  }
+
+  lastScroll = current;
+});
+
+function updateMobileFooter(received, paid){
+
+  const net = paid - received;
+
+  const text = document.getElementById("footerText");
+  const btn = document.getElementById("footerPayBtn");
+
+  // RESET
+  btn.classList.add("hidden");
+
+  if(net < 0){
+    // 🔴 USER NEEDS TO PAY
+    const amount = Math.abs(net);
+
+    text.innerHTML = `🔴 Pay ₹${amount}`;
+
+    btn.classList.remove("hidden");
+
+    btn.onclick = () => {
+      openPaymentDrawer(amount); // or open UPI directly
+    };
+
+  } else if(net > 0){
+    // 🟢 USER WILL GET
+    text.innerHTML = `🟢 You’ll get ₹${net}`;
+  } else {
+    // ⚪ ZERO
+    text.innerHTML = `✅ Settled`;
+  }
+}
+
+function openPaymentDrawer(amount){
+
+  const drawer = document.getElementById("paymentDrawer");
+
+  document.getElementById("drawerAmount").innerText = `₹${amount}`;
+
+  const upiLink = `upi://pay?pa=sudhakarrn0711@okicici&pn=Business&am=${amount}&cu=INR`;
+
+  document.getElementById("drawerPayBtn").href = upiLink;
+
+  drawer.style.transform = "translateY(0)";
+}
+
+function closeDrawer(){
+  document.getElementById("paymentDrawer").style.transform = "translateY(100%)";
+}
+
+function toggleDrawerQR(){
+
+  const qr = document.getElementById("drawerQR");
+
+  if(qr.classList.contains("hidden")){
+    qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(document.getElementById("drawerPayBtn").href)}`;
+    qr.classList.remove("hidden");
+  } else {
+    qr.classList.add("hidden");
+  }
+}
+
 </script>
+
+
+<!-- ✅ MOBILE STICKY MINI FOOTER (SMART + PREMIUM) -->
+<div id="mobileFooter"
+     class="fixed bottom-0 left-0 w-full md:hidden z-50 
+            transition-transform duration-300">
+
+  <div class="mx-3 mb-3 rounded-2xl 
+              bg-black/70 backdrop-blur-xl 
+              border border-white/10 
+              shadow-lg px-4 py-3 flex items-center justify-between">
+
+    <!-- LEFT: BRAND + STATUS -->
+    <div class="flex items-center gap-3 relative">
+
+      <!-- Glow -->
+      <div class="absolute -inset-1 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 
+                  blur-md opacity-20 animate-pulse rounded-xl"></div>
+
+      <!-- Dot -->
+      <span class="relative w-2 h-2 bg-green-400 rounded-full animate-ping"></span>
+
+      <!-- TEXT -->
+      <div class="relative flex flex-col leading-tight">
+        <span class="text-xs text-gray-400">RanSan</span>
+        <span id="footerText" class="text-sm font-medium text-white">
+          Loading...
+        </span>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: ACTION -->
+    <div class="flex items-center gap-2">
+
+      <!-- PAY BUTTON -->
+      <button id="footerPayBtn"
+              class="hidden text-xs px-3 py-1.5 rounded-lg 
+                     bg-green-600 hover:bg-green-700 transition">
+        Pay Now
+      </button>
+
+      <!-- WEBSITE -->
+      <a href="https://www.ransangroups.com"
+         target="_blank"
+         class="text-xs bg-white/10 hover:bg-white/20 
+                px-3 py-1 rounded-lg transition">
+        🌐
+      </a>
+
+    </div>
+
+  </div>
+</div>
+
+<div id="paymentDrawer"
+     class="fixed bottom-0 left-0 w-full z-50 
+            transform translate-y-full 
+            transition-transform duration-300">
+
+  <div class="bg-black text-white rounded-t-2xl p-5 shadow-xl">
+
+    <div class="flex justify-between mb-4">
+      <h3 class="font-semibold">💰 Payment</h3>
+      <button onclick="closeDrawer()">✖</button>
+    </div>
+
+    <div id="drawerAmount" class="text-xl font-bold mb-4"></div>
+
+    <a id="drawerPayBtn"
+       class="block text-center bg-green-600 p-3 rounded-xl mb-3">
+       Pay via UPI
+    </a>
+
+    <button onclick="toggleDrawerQR()"
+       class="w-full bg-blue-600 p-3 rounded-xl">
+       Show QR Code
+    </button>
+
+    <img id="drawerQR" class="hidden w-40 mx-auto mt-4"/>
+  </div>
+</div>
 
 </body>
 </html>

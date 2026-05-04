@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+  <script src="asset/account/account.js" defer></script>
+  <script src="asset/account/cashbook.js" defer></script>
+
+  <script src="asset/account/mobile.js" defer></script>
+  <script src="asset/account/dashboard.js" defer></script>
+
+
+  <link rel="stylesheet" href="asset/account/account.css">
+
+</head>
+
+<body id="appRoot" class="flex h-screen overflow-hidden">
+
+  <!-- 🔐 LOGIN PROTECTION -->
+  <script>
+    // 🔐 Force logout on refresh
+    if (performance.navigation.type === 1) {
+      localStorage.removeItem("isLoggedIn");
+    }
+
+    // Login check
+    if (sessionStorage.getItem("isLoggedIn") !== "true") {
+      window.location.href = "login.html";
+    }
+  </script>
+
+
+  <!-- ================= MODERN SIDEBAR ================= -->
+  <div id="sidebar"
+    class="w-72 bg-gradient-to-b from-[#0b1220] to-[#111827] p-4 flex flex-col text-gray-300 border-r border-gray-800 shadow-2xl">
+
+    <!-- APP LOGO / TITLE -->
+    <div class="mb-5">
+      <div class="flex items-center gap-3">
+        <div
+          class="w-10 h-10 rounded-2xl bg-green-500/20 flex items-center justify-center text-green-400 text-lg font-bold">
+          ₹
+        </div>
+
+        <div>
+          <h1 class="text-lg font-semibold text-white leading-tight">
+            Ledger App
+          </h1>
+          <p class="text-xs text-gray-400">
+            Smart Business Manager
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENV SWITCH CARD -->
+    <!-- ================= TEST / LIVE TOGGLE ================= -->
+    <div class="mb-4">
+
+      <label class="text-xs text-gray-400 block mb-2">
+        Environment
+      </label>
+
+      <div class="flex items-center justify-between bg-white/5 border border-white/10 rounded-2xl p-3">
+
+        <!-- TEST LABEL -->
+        <span id="testLabel" class="text-xs font-semibold px-3 py-1 rounded-full bg-red-600 text-white transition">
+          TEST
+        </span>
+
+        <!-- TOGGLE -->
+        <label class="relative inline-flex items-center cursor-pointer">
+
+          <input type="checkbox" id="envToggle" class="sr-only peer">
+
+          <div class="w-14 h-7 bg-red-600 rounded-full peer peer-checked:bg-green-600 transition-all duration-300">
+
+          </div>
+
+          <div
+            class="absolute left-1 top-1 bg-white w-5 h-5 rounded-full transition-all duration-300 peer-checked:translate-x-7">
+          </div>
+
+        </label>
+
+        <!-- LIVE LABEL -->
+        <span id="liveLabel" class="text-xs font-semibold px-3 py-1 rounded-full bg-gray-700 text-gray-300 transition">
+          LIVE
+        </span>
+
+      </div>
+
+    </div>
+
+    <!-- BUSINESS SELECT -->
+    <div class="mb-4">
+
+      <label class="text-xs text-gray-400 block mb-2">
+        Select Business
+      </label>
+
+      <select id="businessSelect"
+        class="w-full p-3 bg-black/40 text-white rounded-xl border border-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+      </select>
+
+    </div>
+
+    <!-- WHATSAPP STATUS CARD -->
+    <div id="waStatusIndicator" class="bg-white/5 border border-white/10 rounded-2xl p-3 mb-4">
+
+      <div class="flex items-center justify-between">
+
+        <div class="flex items-center gap-3">
+
+          <span id="waDot" class="w-3 h-3 rounded-full bg-orange-500 animate-pulse">
+          </span>
+
+          <div>
+            <p class="text-xs text-gray-400">
+              WhatsApp Status
+            </p>
+
+            <p id="waText" class="text-sm font-medium text-white">
+              Checking...
+            </p>
+          </div>
+
+        </div>
+
+        <div class="text-green-400 text-lg">
+          💬
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ADD BUSINESS BUTTON -->
+    <button onclick="openBusinessModal()"
+      class="bg-green-600 hover:bg-green-700 active:scale-[0.98] transition text-white p-3 rounded-2xl mb-5 font-medium shadow-lg shadow-green-900/30">
+
+      + Add Business
+    </button>
+
+<button onclick="openBusinessManager()"
+  class="bg-gray-700 hover:bg-gray-800 text-white p-3 rounded-2xl mb-2 w-full">
+  ⚙ Manage Businesses
+</button>
+
+    <!-- MENU -->
+    <div id="sidebarMenu" class="space-y-2">
+
+      <button onclick="openCustomers(); setActiveMenu(this)"
+        class="menu-btn flex items-center gap-3 w-full p-3 rounded-xl hover:bg-white/5 transition">
+
+        <span class="text-lg">👥</span>
+        <span>Customers</span>
+
+      </button>
+
+      <button onclick="openCashbook(); setActiveMenu(this)"
+        class="menu-btn flex items-center gap-3 w-full p-3 rounded-xl hover:bg-white/5 transition">
+
+        <span class="text-lg">💰</span>
+        <span>Cashbook</span>
+
+      </button>
+
+      <button onclick="openDashboard(); setActiveMenu(this)"
+        class="menu-btn flex items-center gap-3 w-full p-3 rounded-xl hover:bg-white/5 transition">
+
+        <span class="text-lg">📊</span>
+        <span>Dashboard</span>
+
+      </button>
+
+    </div>
+
+
+  </div>
+
+  <!-- ================= MAIN ================= -->
+  <div class="flex flex-1 relative overflow-hidden">
+
+    <!-- CUSTOMER LIST -->
+    <!-- LEFT PANEL -->
+    <div id="leftPanel" class="w-full md:w-1/3 border-r border-gray-700 flex flex-col
+  absolute md:relative inset-0 bg-[#0b1220] z-20
+  transition duration-300">
+
+      <!-- ================= CUSTOMERS ================= -->
+      <div id="customersSection" class="flex flex-col h-full">
+
+        <!-- HEADER -->
+        <div class="p-3 border-b border-gray-700 flex justify-between items-center sticky top-0 bg-[#0b1220] z-10">
+          <span>Customers</span>
+
+          <div class="flex gap-2">
+
+            <!-- ADD CUSTOMER -->
+            <button onclick="openAddCustomer()" class="iconBtn">
+              <i data-lucide="user-plus"></i>
+              <span class="tooltip">Add Customer (Alt + N)</span>
+            </button>
+
+            <!-- BULK UPLOAD -->
+            <button onclick="document.getElementById('excelFile').click()" class="iconBtn">
+              <i data-lucide="upload"></i>
+              <span class="tooltip">Bulk Upload (Alt + U)</span>
+            </button>
+
+            <!-- DOWNLOAD SAMPLE -->
+            <button onclick="downloadSampleExcel()" class="iconBtn">
+              <i data-lucide="download"></i>
+              <span class="tooltip">Download Sample</span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- DRAG & DROP -->
+        <div id="dropZone" class="border-2 border-dashed border-gray-500 p-4 text-center rounded m-2 cursor-pointer">
+          📂 Drag & Drop or Click to Upload
+        </div>
+
+        <input type="file" id="excelFile" hidden />
+
+
+        <!-- LIST -->
+        <div id="customerList" class="flex-1 overflow-auto"></div>
+
+      </div>
+
+      <!-- ================= CASHBOOK ================= -->
+      <div id="cashbookSection" class="hidden flex flex-col h-full">
+
+        <div class="p-3 border-b border-gray-700 flex justify-between">
+          <span>💰 Cashbook</span>
+
+          <div class="flex gap-2">
+            <button onclick="sortAccounts('az')" class="bg-gray-700 px-2 py-1 rounded text-xs">A–Z</button>
+
+            <button onclick="sortAccounts('balance')" class="bg-gray-700 px-2 py-1 rounded text-xs">₹</button>
+
+            <!-- ✅ NEW SUMMARY BUTTON -->
+            <button onclick="mobileOpenCashSummarySafe(openCashSummary);"
+              class="bg-purple-600 px-2 py-1 rounded text-xs">
+              📊
+            </button>
+
+            <button onclick="openAddAccount()" class="bg-blue-600 px-3 py-1 rounded">
+              +
+            </button>
+          </div>
+        </div>
+
+
+
+        <!-- ✅ SEARCH INPUT -->
+        <input id="searchAccount" placeholder="Search account..." oninput="searchAccounts(this.value)"
+          class="w-full p-2 bg-black border border-gray-700 rounded text-sm" />
+
+        <div id="cashbookList" class="flex-1 overflow-auto"></div>
+
+      </div>
+
+      <!-- ✅ ADD HERE -->
+      <div id="dashboardSection" class="hidden flex flex-col h-full">
+
+        <div class="p-3 border-b border-gray-700">
+          <span>📊 Dashboard</span>
+        </div>
+
+        <div id="dashboardContent" class="flex-1 overflow-auto p-3"></div>
+
+      </div>
+
+
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div id="rightPanel" class="w-full md:flex-1 flex flex-col min-h-0
+  absolute md:relative inset-0 bg-[#0b1220]
+  translate-x-full md:translate-x-0
+  transition duration-300 z-30">
+
+      <!-- 👇 ADD THIS INNER SCROLL WRAPPER -->
+      <div id="rightPanelScroll" class="flex-1 overflow-y-auto min-h-0">
+        Select customer
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ================= MODAL ================= -->
+  <div id="modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden
+         flex items-center justify-center z-[9999]">
+  </div>
+
+
+
+
+  <div class="fab md:hidden" onclick="openAddCustomer()">＋</div>
+
+  <div id="toast" class="fixed bottom-5 right-5 hidden z-[9999]">
+    <div id="toastMsg" class="px-4 py-3 rounded-lg shadow-lg text-white bg-black/80 backdrop-blur">
+    </div>
+  </div>
+
+  <script>
+    function showToast(msg, type = "success") {
+
+      const toast = document.getElementById("toast");
+      const box = document.getElementById("toastMsg");
+
+      box.innerText = msg;
+
+      box.className = `
+    px-4 py-3 rounded-lg shadow-lg text-white backdrop-blur
+    ${type === "error" ? "bg-red-600/90" : "bg-green-600/90"}
+  `;
+
+      toast.classList.remove("hidden");
+
+      setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 2000);
+    }
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    });
+
+    function openCustomersMobile() {
+      showListPanel();     // ✅ just show list
+      openCustomers();     // existing function
+    }
+
+    function openCashbookMobile() {
+      showListPanel();     // ✅ same behavior
+      openCashbook();
+    }
+
+
+    function setActiveMenu(btn) {
+
+      document.querySelectorAll(".menu-btn").forEach(b => {
+        b.classList.remove("menu-active");
+      });
+
+      btn.classList.add("menu-active");
+    }
+
+    // =====================================
+    // TEST / LIVE TOGGLE COLOR SWITCH
+    // =====================================
+    document.addEventListener("DOMContentLoaded", () => {
+
+      const toggle = document.getElementById("envToggle");
+      const testLabel = document.getElementById("testLabel");
+      const liveLabel = document.getElementById("liveLabel");
+
+      if (!toggle) return;
+
+      function updateEnvUI() {
+
+        if (toggle.checked) {
+          // LIVE MODE
+          testLabel.className =
+            "text-xs font-semibold px-3 py-1 rounded-full bg-gray-700 text-gray-300 transition";
+
+          liveLabel.className =
+            "text-xs font-semibold px-3 py-1 rounded-full bg-green-600 text-white transition";
+
+        } else {
+          // TEST MODE
+          testLabel.className =
+            "text-xs font-semibold px-3 py-1 rounded-full bg-red-600 text-white transition";
+
+          liveLabel.className =
+            "text-xs font-semibold px-3 py-1 rounded-full bg-gray-700 text-gray-300 transition";
+        }
+
+      }
+
+      updateEnvUI();
+
+      toggle.addEventListener("change", updateEnvUI);
+
+    });
+
+
+  </script>
+
+
+
+
+
+
+  <div id="uploadModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50">
+    <div class="bg-gray-900 p-6 rounded-2xl w-80 text-center">
+
+      <h3 class="text-lg font-bold mb-3">Uploading Customers</h3>
+
+      <div class="w-full bg-gray-700 rounded-full h-3 mb-3">
+        <div id="uploadBar" class="bg-green-500 h-3 rounded-full" style="width:0%"></div>
+      </div>
+
+      <p id="uploadText" class="text-sm text-gray-300 mb-2">Starting...</p>
+
+      <p id="uploadCount" class="text-xs text-gray-400">0 / 0</p>
+
+    </div>
+  </div>
+
+
+  <div id="previewModal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-50">
+    <div class="bg-gray-900 p-5 rounded-xl w-[90%] max-w-3xl">
+
+      <h3 class="text-lg font-bold mb-3">Preview Upload</h3>
+
+      <div class="max-h-80 overflow-auto border border-gray-700">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-gray-800">
+              <th class="p-2">Name</th>
+              <th class="p-2">Phone</th>
+              <th class="p-2">Language</th> <!-- ✅ ADD THIS -->
+              <th class="p-2">Status</th>
+            </tr>
+          </thead>
+          <tbody id="previewTable"></tbody>
+        </table>
+      </div>
+
+      <div class="flex justify-end gap-2 mt-4">
+        <button onclick="closePreview()" class="bg-gray-600 px-4 py-2 rounded">Cancel</button>
+        <button type="button" onclick="confirmUpload(this)"
+          class="bg-green-600 px-4 py-2 rounded flex items-center gap-2">
+
+          <span class="upload-text">Upload</span>
+
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+
+  <div id="sidebarOverlay" class="hidden fixed inset-0 bg-black/50 z-40"></div>
+
+  <!-- ================= FOOTER ================= -->
+  <div id="appFooter" class="hidden md:flex fixed bottom-0 left-0 right-0
+         bg-white/5 backdrop-blur-xl border-t border-gray-800
+         text-xs text-gray-400 items-center justify-between px-6 py-2 z-40">
+
+    <!-- LEFT -->
+    <span class="tracking-wide">
+      © 2026 RanSan Technology
+    </span>
+
+    <!-- CENTER (WEBSITE LINK) -->
+    <a href="https://www.ransangroups.com" target="_blank"
+      class="text-blue-400 hover:text-blue-300 transition font-medium tracking-wide">
+      www.ransangroups.com
+    </a>
+
+    <!-- RIGHT -->
+    <span class="flex items-center gap-1 opacity-80">
+      Designed & Developed
+      <span class="text-red-500 animate-pulse">❤</span>
+    </span>
+
+  </div>
+
+  <div id="bottomNav"
+    class="fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-700 flex justify-around py-2 md:hidden z-50">
+
+    <button onclick="mobileGo('customers')" class="navBtn customers">
+      <i data-lucide="users"></i>
+      <div>Customers</div>
+    </button>
+
+    <button onclick="mobileGo('cashbook')" class="navBtn cashbook">
+      <i data-lucide="wallet"></i>
+      <div>Cashbook</div>
+    </button>
+
+    <button onclick="mobileGo('dashboard')" class="navBtn dashboard">
+      <i data-lucide="layout-dashboard"></i>
+      <div>Dashboard</div>
+    </button>
+
+    <button onclick="toggleSidebar()" class="navBtn">
+      <i data-lucide="menu"></i>
+      <div>Menu</div>
+    </button>
+
+  </div>
+
+
+  <!-- BUSINESS MODAL (SEPARATE) -->
+  <div id="businessModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+  </div>
+
+
+<div id="deleteConfirmModal"
+  class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50">
+
+  <div class="bg-gray-900 w-[95%] max-w-md rounded-2xl p-5 shadow-2xl border border-gray-700">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="text-white text-lg font-semibold">
+        ⚠️ Confirm Deletion
+      </h3>
+
+      <button onclick="closeDeleteModal()" class="text-gray-400 hover:text-white text-lg">✕</button>
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="text-sm text-gray-300 space-y-2 mb-4">
+      <p>This will permanently delete:</p>
+
+      <ul class="list-disc pl-5 space-y-1 text-red-400">
+        <li>All customers</li>
+        <li>All transactions</li>
+        <li>Cashbook data</li>
+        <li>This business</li>
+      </ul>
+
+      <p class="text-yellow-400 text-xs mt-2">
+        This action cannot be undone.
+      </p>
+    </div>
+
+    <!-- INPUT -->
+    <input id="deleteConfirmInput"
+      placeholder="Type DELETE to confirm"
+      class="w-full p-2 bg-black text-white rounded border border-gray-700 mb-3" />
+
+    <!-- MESSAGE -->
+    <div id="deleteMsg" class="text-xs hidden mb-2"></div>
+
+    <!-- ACTIONS -->
+    <div class="flex gap-2">
+
+      <button onclick="confirmDeleteAction()"
+        id="confirmDeleteBtn"
+        class="bg-red-600 hover:bg-red-700 w-full p-2 rounded text-white flex justify-center items-center gap-2">
+
+        <span id="deleteBtnText">Delete</span>
+
+        <span id="deleteLoader"
+          class="hidden w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin">
+        </span>
+
+      </button>
+
+      <button onclick="closeDeleteModal()"
+        class="bg-gray-700 hover:bg-gray-600 px-4 rounded text-white">
+        Cancel
+      </button>
+
+    </div>
+
+  </div>
+</div>
+
+</body>
+
+</html>

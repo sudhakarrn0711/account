@@ -3048,8 +3048,10 @@ async function sendWhatsAppReminder(
       `&am=${amount}` +
       `&cu=INR`;
 
-    const summaryLink =
-      `https://account.ransangroups.in/account_dashboard.html?customer=${selectedCustomer}&bid=${currentBusiness}`;
+const env = localStorage.getItem("env") || "test";
+
+const summaryLink =
+  `https://account.ransangroups.in/account_dashboard.html?customer=${selectedCustomer}&bid=${currentBusiness}&env=${env}`;
 
     // ==================================
     // MESSAGE

@@ -2,59 +2,25 @@
 
 <html lang="en">
 
-
-
 <head>
-
-
 
   <meta charset="UTF-8">
 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-
-  <meta
-
-    name="viewport"
-
-    content="width=device-width, initial-scale=1.0"
-
-  >
-
-
-
-  <meta
-
-    name="theme-color"
-
-    content="#f1f5f9"
-
-  >
-
-
+  <meta name="theme-color" content="#f1f5f9">
 
   <title>Customer Ledger</title>
-
-
-
-
 
   <!-- Tailwind -->
 
   <script src="https://cdn.tailwindcss.com"></script>
 
-
-
-
-
   <!--
 
     QRCode.js
 
-
-
     QR is generated locally in the customer's browser.
-
-
 
     The UPI payment URI is NOT sent to an external
 
@@ -62,31 +28,14 @@
 
   -->
 
-  <script
-
-    src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
-
-    defer
-
-  ></script>
-
-
-
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
 
   <style>
-
-
-
     html {
 
       scroll-behavior: smooth;
 
     }
-
-
-
-
 
     body {
 
@@ -96,11 +45,7 @@
 
     }
 
-
-
-
-
-#summaryCards > div {
+    #summaryCards>div {
 
       transition:
 
@@ -110,27 +55,15 @@
 
     }
 
-
-
-
-
     @media (hover: hover) {
 
-
-
-      #summaryCards > div:hover {
+      #summaryCards>div:hover {
 
         transform: translateY(-3px);
 
       }
 
-
-
     }
-
-
-
-
 
     .ledger-scroll {
 
@@ -140,19 +73,11 @@
 
     }
 
-
-
-
-
     .ledger-table {
 
       min-width: 42rem;
 
     }
-
-
-
-
 
     /*
 
@@ -160,17 +85,11 @@
 
      */
 
-
-
     #desktopLedger {
 
       display: block;
 
     }
-
-
-
-
 
     /*
 
@@ -178,37 +97,21 @@
 
      */
 
-
-
     #mobileLedger {
 
       display: none;
 
     }
 
-
-
-
-
     @media (max-width: 640px) {
-
-
 
       body {
 
         padding:
 
-          0.75rem
-
-          0.75rem
-
-          6.5rem;
+          0.75rem 0.75rem 6.5rem;
 
       }
-
-
-
-
 
       #summaryCards {
 
@@ -216,19 +119,11 @@
 
       }
 
-
-
-
-
       #desktopLedger {
 
         display: none;
 
       }
-
-
-
-
 
       #mobileLedger {
 
@@ -236,21 +131,13 @@
 
       }
 
-
-
     }
-
-
-
-
 
     /*
 
      * Loading skeleton.
 
      */
-
-
 
     .skeleton {
 
@@ -262,65 +149,33 @@
 
     }
 
-
-
-
-
     .skeleton::after {
-
-
 
       content: "";
 
-
-
       position: absolute;
-
-
 
       inset: 0;
 
-
-
       transform: translateX(-100%);
-
-
 
       background:
 
-        linear-gradient(
-
-          90deg,
+        linear-gradient(90deg,
 
           transparent,
 
           rgba(255, 255, 255, 0.75),
 
-          transparent
-
-        );
-
-
+          transparent);
 
       animation:
 
-        skeleton-loading
-
-        1.3s
-
-        infinite;
-
-
+        skeleton-loading 1.3s infinite;
 
     }
 
-
-
-
-
     @keyframes skeleton-loading {
-
-
 
       100% {
 
@@ -328,13 +183,7 @@
 
       }
 
-
-
     }
-
-
-
-
 
     /*
 
@@ -342,33 +191,19 @@
 
      */
 
-
-
     button:focus-visible,
 
     a:focus-visible {
 
-
-
       outline:
 
-        3px solid
-
-        rgba(37, 99, 235, 0.45);
-
-
+        3px solid rgba(37, 99, 235, 0.45);
 
       outline-offset:
 
         3px;
 
-
-
     }
-
-
-
-
 
     /*
 
@@ -376,43 +211,27 @@
 
      */
 
-
-
     .qr-container canvas,
 
     .qr-container img {
-
-
 
       margin:
 
         0 auto;
 
-
-
       max-width:
 
         100%;
-
-
 
       height:
 
         auto;
 
-
-
       border-radius:
 
         0.75rem;
 
-
-
     }
-
-
-
-
 
     /*
 
@@ -420,11 +239,7 @@
 
      */
 
-
-
     @media print {
-
-
 
       @page {
 
@@ -434,37 +249,21 @@
 
       }
 
-
-
-
-
       body {
-
-
 
         background:
 
           white !important;
 
-
-
         color:
 
           black !important;
-
-
 
         padding:
 
           0 !important;
 
-
-
       }
-
-
-
-
 
       #pdfBtn,
 
@@ -476,41 +275,25 @@
 
       .screen-only {
 
-
-
         display:
 
           none !important;
 
-
-
       }
 
-
-
-
-
       #mainLedgerCard {
-
-
 
         max-width:
 
           none !important;
 
-
-
         box-shadow:
 
           none !important;
 
-
-
         border:
 
           1px solid #e5e7eb;
-
-
 
       }
 
@@ -532,83 +315,45 @@
 
       }
 
-
-
-
-
-
-
       #summaryCards {
-
-
 
         display:
 
           grid !important;
 
-
-
         grid-template-columns:
 
           repeat(3, 1fr) !important;
 
-
-
       }
 
-
-
-
-
-      #summaryCards > div {
-
-
+      #summaryCards>div {
 
         background:
 
           #ffffff !important;
 
-
-
         color:
 
           #111827 !important;
-
-
 
         box-shadow:
 
           none !important;
 
-
-
         border:
 
           1px solid #d1d5db !important;
 
-
-
       }
 
-
-
-
-
       #summaryCards .text-gray-300 {
-
-
 
         color:
 
           #4b5563 !important;
 
-
-
       }
-
-
-
-
 
       #desktopLedger {
 
@@ -616,89 +361,46 @@
 
       }
 
-
-
-
-
       #mobileLedger {
 
         display: none !important;
 
       }
 
-
-
-
-
       .ledger-scroll {
-
-
 
         overflow:
 
           visible !important;
 
-
-
       }
 
-
-
-
-
       .ledger-table {
-
-
 
         min-width:
 
           0 !important;
 
-
-
         width:
 
           100% !important;
 
-
-
       }
 
-
-
-
-
       footer {
-
-
 
         page-break-inside:
 
           avoid;
 
-
-
       }
 
-
-
     }
-
-
-
   </style>
-
-
 
 </head>
 
-
-
-
-
-<body
-
-  class="
+<body class="
 
     bg-slate-100
 
@@ -708,13 +410,7 @@
 
     pb-24
 
-  "
-
->
-
-
-
-
+  ">
 
   <!-- =====================================================
 
@@ -722,17 +418,9 @@
 
        ===================================================== -->
 
-
-
   <main>
 
-
-
-    <section
-
-      id="mainLedgerCard"
-
-      class="
+    <section id="mainLedgerCard" class="
 
         max-w-4xl
 
@@ -752,13 +440,7 @@
 
         border-slate-200
 
-      "
-
-    >
-
-
-
-
+      ">
 
       <!-- =================================================
 
@@ -766,11 +448,7 @@
 
            ================================================= -->
 
-
-
-      <header
-
-        class="
+      <header class="
 
           flex
 
@@ -790,45 +468,24 @@
 
           pb-4
 
-        "
-
-      >
-
-
-
-
+        ">
 
         <div class="min-w-0">
 
-
-
-          <div
-
-            id="businessName"
-            class="
+          <div id="businessName" class="
               text-xl
               sm:text-2xl
               font-extrabold
               text-slate-950
               tracking-tight
               truncate
-            "
-
-          >
+            ">
 
             Business
 
           </div>
 
-
-
-
-
-          <div
-
-            id="customerIdentity"
-
-            class="
+          <div id="customerIdentity" class="
 
               mt-1
 
@@ -836,23 +493,13 @@
 
               text-gray-500
 
-            "
-
-          >
+            ">
             Customer Account Statement
           </div>
 
-
-
         </div>
 
-
-
-
-
-        <div
-
-          class="
+        <div class="
 
             flex
 
@@ -862,15 +509,9 @@
 
             shrink-0
 
-          "
+          ">
 
-        >
-
-
-
-          <div
-
-            class="
+          <div class="
 
               hidden
 
@@ -882,27 +523,13 @@
 
               mr-2
 
-            "
-
-          >
+            ">
 
             <span id="today"></span>
 
           </div>
 
-
-
-
-
-          <button
-
-            id="pdfBtn"
-
-            type="button"
-
-            onclick="downloadPDF()"
-
-            class="
+          <button id="pdfBtn" type="button" onclick="downloadPDF()" class="
 
               inline-flex
 
@@ -930,11 +557,7 @@
 
               transition
 
-            "
-
-            aria-label="Print or save ledger as PDF"
-
-          >
+            " aria-label="Print or save ledger as PDF">
 
             <span aria-hidden="true">⬇️</span>
 
@@ -942,17 +565,9 @@
 
           </button>
 
-
-
         </div>
 
-
-
       </header>
-
-
-
-
 
       <!-- =================================================
 
@@ -960,11 +575,7 @@
 
            ================================================= -->
 
-
-
-      <div
-
-        class="
+      <div class="
 
           flex
 
@@ -976,19 +587,11 @@
 
           mt-4
 
-        "
-
-      >
-
-
+        ">
 
         <div>
 
-
-
-          <div
-
-            class="
+          <div class="
 
               text-xs
 
@@ -1000,45 +603,28 @@
 
               text-gray-400
 
-            "
-
-          >
+            ">
 
             Customer Statement
 
           </div>
 
-
-
-          <div
-
-            id="statementCustomerName"
-            class="
+          <div id="statementCustomerName" class="
               text-xl
               sm:text-2xl
               font-bold
               text-blue-700
               mt-1
               tracking-tight
-            "
-
-          >
+            ">
 
             Loading…
 
           </div>
 
-
-
         </div>
 
-
-
-
-
-        <div
-
-          class="
+        <div class="
 
             sm:hidden
 
@@ -1046,24 +632,18 @@
 
             text-gray-400
 
-          "
-
-        >
+          ">
 
           <span id="mobileToday"></span>
 
         </div>
-
-
 
       </div>
       <!-- =================================================
            OUTSTANDING BALANCE
            ================================================= -->
 
-      <section
-        id="balanceHero"
-        class="
+      <section id="balanceHero" class="
           mt-5
           rounded-2xl
           border
@@ -1075,30 +655,22 @@
           p-5
           sm:p-6
           shadow-lg
-        "
-        aria-labelledby="balanceHeroHeading"
-        aria-live="polite"
-      >
+        " aria-labelledby="balanceHeroHeading" aria-live="polite">
         <div class="flex items-start justify-between gap-4">
 
           <div class="min-w-0">
 
-            <div
-              id="balanceHeroHeading"
-              class="
+            <div id="balanceHeroHeading" class="
                 text-xs
                 font-semibold
                 uppercase
                 tracking-wider
                 text-slate-400
-              "
-            >
+              ">
               Outstanding Balance
             </div>
 
-            <div
-              id="balanceHeroStatus"
-              class="
+            <div id="balanceHeroStatus" class="
                 mt-2
                 inline-flex
                 items-center
@@ -1109,37 +681,29 @@
                 text-xs
                 font-semibold
                 text-slate-200
-              "
-            >
+              ">
               Loading…
             </div>
 
           </div>
 
-
           <div class="text-right shrink-0">
 
-            <div
-              id="balanceHeroAmount"
-              class="
+            <div id="balanceHeroAmount" class="
                 text-3xl
                 sm:text-4xl
                 font-extrabold
                 tracking-tight
                 text-white
-              "
-            >
+              ">
               ₹0
             </div>
 
-            <div
-              id="balanceHeroHint"
-              class="
+            <div id="balanceHeroHint" class="
                 mt-1
                 text-xs
                 text-slate-400
-              "
-            >
+              ">
               Current ledger balance
             </div>
 
@@ -1148,25 +712,13 @@
         </div>
       </section>
 
-
-
-
-
-
-
       <!-- =================================================
 
            KPI CARDS
 
            ================================================= -->
 
-
-
-      <section
-
-        id="summaryCards"
-
-        class="
+      <section id="summaryCards" class="
 
           grid
 
@@ -1176,21 +728,11 @@
 
           mt-5
 
-        "
-
-        aria-label="Ledger summary"
-
-      >
-
-
+        " aria-label="Ledger summary">
 
         <!-- Initial skeleton -->
 
-
-
-        <div
-
-          class="
+        <div class="
 
             skeleton
 
@@ -1198,15 +740,9 @@
 
             rounded-2xl
 
-          "
+          "></div>
 
-        ></div>
-
-
-
-        <div
-
-          class="
+        <div class="
 
             skeleton
 
@@ -1214,15 +750,9 @@
 
             rounded-2xl
 
-          "
+          "></div>
 
-        ></div>
-
-
-
-        <div
-
-          class="
+        <div class="
 
             skeleton
 
@@ -1230,17 +760,9 @@
 
             rounded-2xl
 
-          "
-
-        ></div>
-
-
+          "></div>
 
       </section>
-
-
-
-
 
       <!-- =================================================
 
@@ -1248,13 +770,7 @@
 
            ================================================= -->
 
-
-
-      <section
-
-        id="payBox"
-
-        class="
+      <section id="payBox" class="
 
           bg-gray-900
 
@@ -1272,17 +788,9 @@
 
           screen-only
 
-        "
+        " aria-labelledby="paymentHeading">
 
-        aria-labelledby="paymentHeading"
-
-      >
-
-
-
-        <div
-
-          class="
+        <div class="
 
             flex
 
@@ -1294,43 +802,23 @@
 
             mb-4
 
-          "
-
-        >
-
-
+          ">
 
           <div>
 
-
-
-            <h2
-
-              id="paymentHeading"
-
-              class="
+            <h2 id="paymentHeading" class="
 
                 font-semibold
 
                 text-base
 
-              "
-
-            >
+              ">
 
               Pay Outstanding Balance
 
             </h2>
 
-
-
-
-
-            <div
-
-              id="paymentBusinessName"
-
-              class="
+            <div id="paymentBusinessName" class="
 
                 text-xs
 
@@ -1338,27 +826,15 @@
 
                 mt-1
 
-              "
-
-            >
+              ">
 
               Secure UPI payment
 
             </div>
 
-
-
           </div>
 
-
-
-
-
-          <div
-
-            id="paymentAmount"
-
-            class="
+          <div id="paymentAmount" class="
 
               text-lg
 
@@ -1368,29 +844,13 @@
 
               whitespace-nowrap
 
-            "
-
-          ></div>
-
-
+            "></div>
 
         </div>
 
-
-
-
-
         <!-- Mobile UPI -->
 
-
-
-        <a
-
-          id="upiBtn"
-
-          href="#"
-
-          class="
+        <a id="upiBtn" href="#" class="
 
             hidden
 
@@ -1412,33 +872,15 @@
 
             transition
 
-          "
-
-          aria-label="Pay outstanding balance via UPI"
-
-        >
+          " aria-label="Pay outstanding balance via UPI">
 
           Pay via UPI
 
         </a>
 
-
-
-
-
         <!-- Desktop QR -->
 
-
-
-        <button
-
-          id="qrBtn"
-
-          type="button"
-
-          onclick="showQR()"
-
-          class="
+        <button id="qrBtn" type="button" onclick="showQR()" class="
 
             hidden
 
@@ -1460,27 +902,13 @@
 
             transition
 
-          "
-
-          aria-expanded="false"
-
-          aria-controls="qrArea"
-
-        >
+          " aria-expanded="false" aria-controls="qrArea">
 
           Show QR Code
 
         </button>
 
-
-
-
-
-        <div
-
-          id="qrArea"
-
-          class="
+        <div id="qrArea" class="
 
             hidden
 
@@ -1494,17 +922,9 @@
 
             text-center
 
-          "
+          ">
 
-        >
-
-
-
-          <div
-
-            id="qrCode"
-
-            class="
+          <div id="qrCode" class="
 
               qr-container
 
@@ -1512,19 +932,9 @@
 
               justify-center
 
-            "
+            "></div>
 
-          ></div>
-
-
-
-
-
-          <img
-
-            id="qrFallbackImage"
-
-            class="
+          <img id="qrFallbackImage" class="
 
               hidden
 
@@ -1536,21 +946,9 @@
 
               rounded-xl
 
-            "
+            " alt="Business payment QR code">
 
-            alt="Business payment QR code"
-
-          >
-
-
-
-
-
-          <div
-
-            id="qrPayee"
-
-            class="
+          <div id="qrPayee" class="
 
               text-xs
 
@@ -1558,21 +956,11 @@
 
               mt-3
 
-            "
-
-          ></div>
-
-
+            "></div>
 
         </div>
 
-
-
       </section>
-
-
-
-
 
       <!-- =================================================
 
@@ -1580,27 +968,13 @@
 
            ================================================= -->
 
-
-
-      <section
-
-        class="
+      <section class="
 
           mt-7
 
-        "
+        " aria-labelledby="transactionHeading">
 
-        aria-labelledby="transactionHeading"
-
-      >
-
-
-
-
-
-        <div
-
-          class="
+        <div class="
 
             flex
 
@@ -1612,21 +986,11 @@
 
             mb-3
 
-          "
-
-        >
-
-
+          ">
 
           <div>
 
-
-
-            <h2
-
-              id="transactionHeading"
-
-              class="
+            <h2 id="transactionHeading" class="
 
                 text-base
 
@@ -1634,19 +998,13 @@
 
                 text-gray-900
 
-              "
-
-            >
+              ">
 
               Transaction History
 
             </h2>
 
-
-
-            <div
-
-              class="
+            <div class="
 
                 text-xs
 
@@ -1654,32 +1012,15 @@
 
                 mt-0.5
 
-              "
-
-            >
+              ">
 
               Latest transactions shown first
 
             </div>
 
-
-
           </div>
 
-
-
-
-
-          <button
-
-            id="refreshBtn"
-
-            type="button"
-
-            onclick="loadSummary(true)"
-            aria-label="Refresh customer ledger"
-
-            class="
+          <button id="refreshBtn" type="button" onclick="loadSummary(true)" aria-label="Refresh customer ledger" class="
 
               screen-only
 
@@ -1703,21 +1044,13 @@
 
               transition
 
-            "
-
-          >
+            ">
 
             Refresh
 
           </button>
 
-
-
         </div>
-
-
-
-
 
         <!-- ===============================================
 
@@ -1725,23 +1058,7 @@
 
              =============================================== -->
 
-
-
-        <div
-
-          id="ledgerStatus"
-
-          class="hidden"
-
-          role="status"
-
-          aria-live="polite"
-
-        ></div>
-
-
-
-
+        <div id="ledgerStatus" class="hidden" role="status" aria-live="polite"></div>
 
         <!-- ===============================================
 
@@ -1749,13 +1066,7 @@
 
              =============================================== -->
 
-
-
-        <div
-
-          id="desktopLedger"
-
-          class="
+        <div id="desktopLedger" class="
 
             ledger-scroll
 
@@ -1767,15 +1078,9 @@
 
             overflow-hidden
 
-          "
+          ">
 
-        >
-
-
-
-          <div
-
-            class="
+          <div class="
 
               ledger-table
 
@@ -1793,19 +1098,11 @@
 
               font-semibold
 
-            "
-
-          >
-
-
+            ">
 
             <div>Date</div>
 
-
-
             <div>Details</div>
-
-
 
             <div class="text-right">
 
@@ -1813,27 +1110,15 @@
 
             </div>
 
-
-
             <div class="text-right">
 
               Cash Paid
 
             </div>
 
-
-
           </div>
 
-
-
-
-
-          <div
-
-            id="summary"
-
-            class="
+          <div id="summary" class="
 
               ledger-table
 
@@ -1843,17 +1128,9 @@
 
               divide-gray-100
 
-            "
+            " aria-live="polite">
 
-            aria-live="polite"
-
-          >
-
-
-
-            <div
-
-              class="
+            <div class="
 
                 p-6
 
@@ -1861,25 +1138,15 @@
 
                 text-gray-500
 
-              "
-
-            >
+              ">
 
               Loading ledger…
 
             </div>
 
-
-
           </div>
 
-
-
         </div>
-
-
-
-
 
         <!-- ===============================================
 
@@ -1887,27 +1154,13 @@
 
              =============================================== -->
 
-
-
-        <div
-
-          id="mobileLedger"
-
-          class="
+        <div id="mobileLedger" class="
 
             space-y-3
 
-          "
+          " aria-live="polite">
 
-          aria-live="polite"
-
-        >
-
-
-
-          <div
-
-            class="
+          <div class="
 
               p-6
 
@@ -1923,33 +1176,19 @@
 
               rounded-xl
 
-            "
-
-          >
+            ">
 
             Loading ledger…
 
           </div>
 
-
-
         </div>
-
-
 
       </section>
 
-
-
     </section>
 
-
-
   </main>
-
-
-
-
 
   <!-- =====================================================
 
@@ -1957,11 +1196,7 @@
 
        ===================================================== -->
 
-
-
-  <footer
-
-    class="
+  <footer class="
 
       max-w-4xl
 
@@ -1969,15 +1204,9 @@
 
       mt-8
 
-    "
+    ">
 
-  >
-
-
-
-    <div
-
-      class="
+    <div class="
 
         bg-gradient-to-br
 
@@ -1999,15 +1228,9 @@
 
         border-white/10
 
-      "
+      ">
 
-    >
-
-
-
-      <div
-
-        class="
+      <div class="
 
           grid
 
@@ -2017,41 +1240,25 @@
 
           items-center
 
-        "
-
-      >
-
-
+        ">
 
         <!-- BRAND -->
 
-
-
         <div>
 
-
-
-          <div
-
-            class="
+          <div class="
 
               text-lg
 
               font-semibold
 
-            "
-
-          >
+            ">
 
             RanSan Technology
 
           </div>
 
-
-
-          <div
-
-            class="
+          <div class="
 
               text-xs
 
@@ -2059,29 +1266,17 @@
 
               mt-1
 
-            "
-
-          >
+            ">
 
             Smart Ledger &amp; Business Solutions
 
           </div>
 
-
-
         </div>
-
-
-
-
 
         <!-- CONTACT -->
 
-
-
-        <div
-
-          class="
+        <div class="
 
             text-sm
 
@@ -2089,11 +1284,7 @@
 
             space-y-1
 
-          "
-
-        >
-
-
+          ">
 
           <div>
 
@@ -2101,47 +1292,23 @@
 
           </div>
 
-
-
           <div>
 
             📧 ransangroups2025@gmail.com
 
           </div>
 
-
-
         </div>
-
-
-
-
 
         <!-- WEBSITE -->
 
-
-
-        <div
-
-          class="
+        <div class="
 
             md:text-right
 
-          "
+          ">
 
-        >
-
-
-
-          <a
-
-            href="https://www.ransangroups.com"
-
-            target="_blank"
-
-            rel="noopener noreferrer"
-
-            class="
+          <a href="https://www.ransangroups.com" target="_blank" rel="noopener noreferrer" class="
 
               inline-flex
 
@@ -2163,29 +1330,17 @@
 
               transition
 
-            "
-
-          >
+            ">
 
             🌐 www.ransangroups.com
 
           </a>
 
-
-
         </div>
-
-
 
       </div>
 
-
-
-
-
-      <div
-
-        class="
+      <div class="
 
           border-t
 
@@ -2201,9 +1356,7 @@
 
           text-gray-500
 
-        "
-
-      >
+        ">
 
         © <span id="copyrightYear"></span>
 
@@ -2211,17 +1364,9 @@
 
       </div>
 
-
-
     </div>
 
-
-
   </footer>
-
-
-
-
 
   <!-- =====================================================
 
@@ -2229,13 +1374,7 @@
 
        ===================================================== -->
 
-
-
-  <div
-
-    id="mobileFooter"
-
-    class="
+  <div id="mobileFooter" class="
 
       fixed
 
@@ -2255,15 +1394,9 @@
 
       screen-only
 
-    "
+    ">
 
-  >
-
-
-
-    <div
-
-      class="
+    <div class="
 
         mx-3
 
@@ -2293,15 +1426,9 @@
 
         gap-3
 
-      "
+      ">
 
-    >
-
-
-
-      <div
-
-        class="
+      <div class="
 
           flex
 
@@ -2311,15 +1438,9 @@
 
           min-w-0
 
-        "
+        ">
 
-      >
-
-
-
-        <span
-
-          class="
+        <span class="
 
             w-2
 
@@ -2331,19 +1452,9 @@
 
             shrink-0
 
-          "
+          " aria-hidden="true"></span>
 
-          aria-hidden="true"
-
-        ></span>
-
-
-
-
-
-        <div
-
-          class="
+        <div class="
 
             flex
 
@@ -2353,17 +1464,9 @@
 
             min-w-0
 
-          "
+          ">
 
-        >
-
-
-
-          <span
-
-            id="footerBusinessName"
-
-            class="
+          <span id="footerBusinessName" class="
 
               text-xs
 
@@ -2371,23 +1474,13 @@
 
               truncate
 
-            "
-
-          >
+            ">
 
             Ledger
 
           </span>
 
-
-
-
-
-          <span
-
-            id="footerText"
-
-            class="
+          <span id="footerText" class="
 
               text-sm
 
@@ -2397,29 +1490,17 @@
 
               truncate
 
-            "
-
-          >
+            ">
 
             Loading…
 
           </span>
 
-
-
         </div>
-
-
 
       </div>
 
-
-
-
-
-      <div
-
-        class="
+      <div class="
 
           flex
 
@@ -2429,19 +1510,9 @@
 
           shrink-0
 
-        "
+        ">
 
-      >
-
-
-
-        <button
-
-          id="footerPayBtn"
-
-          type="button"
-
-          class="
+        <button id="footerPayBtn" type="button" class="
 
             hidden
 
@@ -2463,29 +1534,14 @@
 
             transition
 
-          "
-
-        >
+          ">
 
           Pay Now
 
         </button>
 
-
-
-
-
-        <a
-
-          href="https://www.ransangroups.com"
-
-          target="_blank"
-
-          rel="noopener noreferrer"
-
-          aria-label="Open RanSan Groups website"
-
-          class="
+        <a href="https://www.ransangroups.com" target="_blank" rel="noopener noreferrer"
+          aria-label="Open RanSan Groups website" class="
 
             text-xs
 
@@ -2503,29 +1559,17 @@
 
             transition
 
-          "
-
-        >
+          ">
 
           🌐
 
         </a>
 
-
-
       </div>
-
-
 
     </div>
 
-
-
   </div>
-
-
-
-
 
   <!-- =====================================================
 
@@ -2533,13 +1577,7 @@
 
        ===================================================== -->
 
-
-
-  <div
-
-    id="paymentDrawer"
-
-    class="
+  <div id="paymentDrawer" class="
 
       fixed
 
@@ -2561,21 +1599,9 @@
 
       screen-only
 
-    "
+    " role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
 
-    role="dialog"
-
-    aria-modal="true"
-
-    aria-labelledby="drawerTitle"
-
-  >
-
-
-
-    <div
-
-      class="
+    <div class="
 
         bg-black
 
@@ -2591,29 +1617,17 @@
 
         overflow-y-auto
 
-      "
+      ">
 
-    >
-
-
-
-      <div
-
-        class="
+      <div class="
 
           max-w-md
 
           mx-auto
 
-        "
+        ">
 
-      >
-
-
-
-        <div
-
-          class="
+        <div class="
 
             flex
 
@@ -2623,35 +1637,17 @@
 
             mb-4
 
-          "
-
-        >
-
-
+          ">
 
           <div>
 
-
-
-            <h2
-
-              id="drawerTitle"
-
-              class="font-semibold"
-
-            >
+            <h2 id="drawerTitle" class="font-semibold">
 
               Payment
 
             </h2>
 
-
-
-            <div
-
-              id="drawerPayee"
-
-              class="
+            <div id="drawerPayee" class="
 
                 text-xs
 
@@ -2659,27 +1655,11 @@
 
                 mt-1
 
-              "
-
-            ></div>
-
-
+              "></div>
 
           </div>
 
-
-
-
-
-          <button
-
-            type="button"
-
-            onclick="closeDrawer()"
-
-            aria-label="Close payment panel"
-
-            class="
+          <button type="button" onclick="closeDrawer()" aria-label="Close payment panel" class="
 
               w-9
 
@@ -2693,27 +1673,15 @@
 
               transition
 
-            "
-
-          >
+            ">
 
             ✕
 
           </button>
 
-
-
         </div>
 
-
-
-
-
-        <div
-
-          id="drawerAmount"
-
-          class="
+        <div id="drawerAmount" class="
 
             text-2xl
 
@@ -2721,21 +1689,9 @@
 
             mb-4
 
-          "
+          "></div>
 
-        ></div>
-
-
-
-
-
-        <a
-
-          id="drawerPayBtn"
-
-          href="#"
-
-          class="
+        <a id="drawerPayBtn" href="#" class="
 
             block
 
@@ -2755,27 +1711,13 @@
 
             transition
 
-          "
-
-        >
+          ">
 
           Pay via UPI
 
         </a>
 
-
-
-
-
-        <button
-
-          id="drawerQrBtn"
-
-          type="button"
-
-          onclick="toggleDrawerQR()"
-
-          class="
+        <button id="drawerQrBtn" type="button" onclick="toggleDrawerQR()" class="
 
             w-full
 
@@ -2791,27 +1733,13 @@
 
             transition
 
-          "
-
-          aria-expanded="false"
-
-          aria-controls="drawerQRArea"
-
-        >
+          " aria-expanded="false" aria-controls="drawerQRArea">
 
           Show QR Code
 
         </button>
 
-
-
-
-
-        <div
-
-          id="drawerQRArea"
-
-          class="
+        <div id="drawerQRArea" class="
 
             hidden
 
@@ -2825,17 +1753,9 @@
 
             text-center
 
-          "
+          ">
 
-        >
-
-
-
-          <div
-
-            id="drawerQR"
-
-            class="
+          <div id="drawerQR" class="
 
               qr-container
 
@@ -2843,19 +1763,9 @@
 
               justify-center
 
-            "
+            "></div>
 
-          ></div>
-
-
-
-
-
-          <img
-
-            id="drawerQRFallback"
-
-            class="
+          <img id="drawerQRFallback" class="
 
               hidden
 
@@ -2867,35 +1777,17 @@
 
               rounded-xl
 
-            "
-
-            alt="Business payment QR code"
-
-          >
-
-
+            " alt="Business payment QR code">
 
         </div>
 
-
-
       </div>
-
-
 
     </div>
 
-
-
   </div>
 
-
-
-
-
   <script>
-
-
 
     // =====================================================
 
@@ -2903,15 +1795,9 @@
 
     // =====================================================
 
-
-
     const API =
 
       "https://script.google.com/macros/s/AKfycbx5UFyYEx2SuYiLLGwOqmQehiDBYBL1r6I9hIB_05gSJIY6HUcSnusLUZkMSk9OLD1b/exec";
-
-
-
-
 
     const urlParams =
 
@@ -2921,25 +1807,13 @@
 
       );
 
-
-
-
-
     const customerId =
 
       urlParams.get("customer");
 
-
-
-
-
     const businessId =
 
       urlParams.get("bid");
-
-
-
-
 
     const env =
 
@@ -2947,21 +1821,13 @@
 
       "test";
 
-
-
-
-
     // =====================================================
 
     // STATE
 
     // =====================================================
 
-
-
     let publicProfile = {
-
-
 
       business: {
 
@@ -2977,53 +1843,29 @@
 
       },
 
-
-
       customer: {
 
         name: "Customer"
 
       }
 
-
-
     };
-
-
-
-
 
     let isLoading =
 
       false;
 
-
-
-
-
     let currentUPILink =
 
       "";
-
-
-
-
 
     let mainQRCreated =
 
       false;
 
-
-
-
-
     let drawerQRCreated =
 
       false;
-
-
-
-
 
     // =====================================================
 
@@ -3031,15 +1873,9 @@
 
     // =====================================================
 
-
-
     const currentDate =
 
       new Date();
-
-
-
-
 
     const formattedToday =
 
@@ -3059,21 +1895,13 @@
 
       );
 
-
-
-
-
     document
 
       .getElementById("today")
 
       .textContent =
 
-        formattedToday;
-
-
-
-
+      formattedToday;
 
     document
 
@@ -3081,11 +1909,7 @@
 
       .textContent =
 
-        formattedToday;
-
-
-
-
+      formattedToday;
 
     document
 
@@ -3093,11 +1917,7 @@
 
       .textContent =
 
-        currentDate.getFullYear();
-
-
-
-
+      currentDate.getFullYear();
 
     // =====================================================
 
@@ -3105,11 +1925,7 @@
 
     // =====================================================
 
-
-
     function escapeHTML(value) {
-
-
 
       return String(
 
@@ -3157,17 +1973,9 @@
 
         );
 
-
-
     }
 
-
-
-
-
     function formatMoney(value) {
-
-
 
       const amount =
 
@@ -3176,10 +1984,6 @@
           Number(value) || 0
 
         );
-
-
-
-
 
       return (
 
@@ -3199,25 +2003,13 @@
 
       );
 
-
-
     }
 
-
-
-
-
     function formatDate(value) {
-
-
 
       const date =
 
         new Date(value);
-
-
-
-
 
       if (
 
@@ -3229,17 +2021,9 @@
 
       ) {
 
-
-
         return "-";
 
-
-
       }
-
-
-
-
 
       return date.toLocaleDateString(
 
@@ -3257,295 +2041,134 @@
 
       );
 
-
-
     }
-
-
-
-
 
     function setLoadingState() {
 
-
-
       document
-
         .getElementById("summary")
-
-        .innerHTML = \`
-
-
-
-          <div
-
-            class="
-
-              p-8
-
-              text-center
-
-              text-gray-500
-
-            "
-
-          >
-
-            Loading ledger…
-
-          </div>
-
-
-
-        \`;
-
-
-
-
+        .innerHTML = `
+      <div
+        class="
+          p-8
+          text-center
+          text-gray-500
+        "
+      >
+        Loading ledger…
+      </div>
+    `;
 
       document
-
         .getElementById("mobileLedger")
-
-        .innerHTML = \`
-
-
-
-          <div
-
-            class="
-
-              bg-white
-
-              border
-
-              border-gray-200
-
-              rounded-xl
-
-              p-4
-
-              space-y-3
-
-            "
-
-          >
-
-
-
-            <div
-
-              class="
-
-                skeleton
-
-                h-4
-
-                w-24
-
-                rounded
-
-              "
-
-            ></div>
-
-
-
-            <div
-
-              class="
-
-                skeleton
-
-                h-5
-
-                w-40
-
-                rounded
-
-              "
-
-            ></div>
-
-
-
-            <div
-
-              class="
-
-                skeleton
-
-                h-4
-
-                w-28
-
-                rounded
-
-              "
-
-            ></div>
-
-
-
-          </div>
-
-
-
-        \`;
-
-
-
-    }
-
-
-
-
-
-    function showLedgerError(message) {
-
-
-
-      const safeMessage =
-
-        escapeHTML(message);
-
-
-
-
-
-      const errorHTML = \`
-
-
+        .innerHTML = `
+      <div
+        class="
+          bg-white
+          border
+          border-gray-200
+          rounded-xl
+          p-4
+          space-y-3
+        "
+      >
 
         <div
-
           class="
-
-            p-7
-
-            text-center
-
+            skeleton
+            h-4
+            w-24
+            rounded
           "
-
-        >
-
-
-
-          <div
-
-            class="
-
-              text-red-600
-
-              font-semibold
-
-            "
-
-          >
-
-            Unable to load ledger
-
-          </div>
-
-
-
-
-
-          <div
-
-            class="
-
-              text-sm
-
-              text-gray-500
-
-              mt-2
-
-            "
-
-          >
-
-            ${safeMessage}
-
-          </div>
-
-
-
-
-
-          <button
-
-            type="button"
-
-            onclick="loadSummary(true)"
-
-            class="
-
-              mt-4
-
-              bg-blue-600
-
-              hover:bg-blue-700
-
-              text-white
-
-              px-4
-
-              py-2
-
-              rounded-lg
-
-              text-sm
-
-              font-semibold
-
-            "
-
-          >
-
-            Retry
-
-          </button>
-
-
-
-        </div>
-
-
-
-      \`;
-
-
-
-
-
-      document
-
-        .getElementById("summary")
-
-        .innerHTML =
-
-          errorHTML;
-
-
-
-
-
-      document
-
-        .getElementById("mobileLedger")
-
-        .innerHTML =
-
-          errorHTML;
-
-
+        ></div>
+
+        <div
+          class="
+            skeleton
+            h-5
+            w-40
+            rounded
+          "
+        ></div>
+
+        <div
+          class="
+            skeleton
+            h-4
+            w-28
+            rounded
+          "
+        ></div>
+
+      </div>
+    `;
 
     }
 
+function showLedgerError(message) {
 
+  const safeMessage =
+    escapeHTML(message);
 
+  const errorHTML = `
+    <div
+      class="
+        p-7
+        text-center
+      "
+    >
 
+      <div
+        class="
+          text-red-600
+          font-semibold
+        "
+      >
+        Unable to load ledger
+      </div>
+
+      <div
+        class="
+          text-sm
+          text-gray-500
+          mt-2
+        "
+      >
+        ${safeMessage}
+      </div>
+
+      <button
+        type="button"
+        onclick="loadSummary(true)"
+        class="
+          mt-4
+          bg-blue-600
+          hover:bg-blue-700
+          text-white
+          px-4
+          py-2
+          rounded-lg
+          text-sm
+          font-semibold
+        "
+      >
+        Retry
+      </button>
+
+    </div>
+  `;
+
+  document
+    .getElementById("summary")
+    .innerHTML =
+      errorHTML;
+
+  document
+    .getElementById("mobileLedger")
+    .innerHTML =
+      errorHTML;
+
+}
 
     // =====================================================
 
@@ -3553,141 +2176,66 @@
 
     // =====================================================
 
-
-
-    async function fetchJSON(
-
-      params,
-
-      timeoutMs = 15000
-
-    ) {
-
-
-
-      const controller =
-
-        new AbortController();
-
-
-
-
-
-      const timeout =
-
-        setTimeout(
-
-          () =>
-
-            controller.abort(),
-
-          timeoutMs
-
-        );
-
-
-
-
-
-      try {
-
-
-
-        const query =
-
-          new URLSearchParams(
-
-            params
-
-          );
-
-
-
-
-
-        const response =
-
-          await fetch(
-
-            \`${API}?${query.toString()}\`,
-
-            {
-
-              signal:
-
-                controller.signal,
-
-
-
-              headers: {
-
-                Accept:
-
-                  "application/json"
-
-              },
-
-
-
-              cache:
-
-                "no-store"
-
-            }
-
-          );
-
-
-
-
-
-        if (!response.ok) {
-
-
-
-          throw new Error(
-
-            \`Server error (${response.status})\`
-
-          );
-
-
-
+async function fetchJSON(
+  params,
+  timeoutMs = 15000
+) {
+
+  const controller =
+    new AbortController();
+
+  const timeout =
+    setTimeout(
+      () =>
+        controller.abort(),
+      timeoutMs
+    );
+
+  try {
+
+    const query =
+      new URLSearchParams(
+        params
+      );
+
+    const response =
+      await fetch(
+        `${API}?${query.toString()}`,
+        {
+          signal:
+            controller.signal,
+
+          headers: {
+            Accept:
+              "application/json"
+          },
+
+          cache:
+            "no-store"
         }
+      );
 
+    if (!response.ok) {
 
-
-
-
-        return await response.json();
-
-
-
-      }
-
-
-
-      finally {
-
-
-
-        clearTimeout(
-
-          timeout
-
-        );
-
-
-
-      }
-
-
+      throw new Error(
+        `Server error (${response.status})`
+      );
 
     }
 
+    return await response.json();
 
+  }
 
+  finally {
 
+    clearTimeout(
+      timeout
+    );
+
+  }
+
+}
 
     // =====================================================
 
@@ -3695,15 +2243,9 @@
 
     // =====================================================
 
-
-
     async function loadPublicProfile() {
 
-
-
       try {
-
-
 
         const data =
 
@@ -3715,19 +2257,13 @@
 
                 "getPublicLedgerProfile",
 
-
-
               bid:
 
                 businessId,
 
-
-
               cid:
 
                 customerId,
-
-
 
               env:
 
@@ -3739,10 +2275,6 @@
 
           );
 
-
-
-
-
         if (
 
           !data ||
@@ -3751,21 +2283,11 @@
 
         ) {
 
-
-
           return;
-
-
 
         }
 
-
-
-
-
         if (data.business) {
-
-
 
           publicProfile.business = {
 
@@ -3775,17 +2297,9 @@
 
           };
 
-
-
         }
 
-
-
-
-
         if (data.customer) {
-
-
 
           publicProfile.customer = {
 
@@ -3795,25 +2309,13 @@
 
           };
 
-
-
         }
-
-
-
-
 
         updateProfileUI();
 
-
-
       }
 
-
-
       catch (error) {
-
-
 
         /*
 
@@ -3823,8 +2325,6 @@
 
          */
 
-
-
         console.warn(
 
           "Unable to load public ledger profile:",
@@ -3833,37 +2333,19 @@
 
         );
 
-
-
       }
-
-
 
     }
 
-
-
-
-
     function updateProfileUI() {
-
-
 
       const business =
 
         publicProfile.business;
 
-
-
-
-
       const customer =
 
         publicProfile.customer;
-
-
-
-
 
       const businessName =
 
@@ -3871,19 +2353,11 @@
 
         "Business";
 
-
-
-
-
       const customerName =
 
         customer.name ||
 
         "Customer";
-
-
-
-
 
       document
 
@@ -3893,21 +2367,13 @@
 
           businessName;
 
-
-
-
-
       document
 
         .getElementById("customerIdentity")
 
         .textContent =
 
-          \`${customerName} · Customer Ledger\`;
-
-
-
-
+          "Customer Account Statement";
 
       document
 
@@ -3917,10 +2383,6 @@
 
           customerName;
 
-
-
-
-
       document
 
         .getElementById("footerBusinessName")
@@ -3928,10 +2390,6 @@
         .textContent =
 
           businessName;
-
-
-
-
 
       document
 
@@ -3943,10 +2401,6 @@
 
           businessName;
 
-
-
-
-
       document
 
         .getElementById("drawerPayee")
@@ -3957,21 +2411,11 @@
 
           businessName;
 
-
-
-
-
       document.title =
 
-        \`${customerName} - ${businessName} Ledger\`;
-
-
+        `${customerName} - ${businessName} Ledger`;
 
     }
-
-
-
-
 
     // =====================================================
 
@@ -3979,11 +2423,7 @@
 
     // =====================================================
 
-
-
     async function loadSummary(force = false) {
-
-
 
       if (
 
@@ -3993,17 +2433,9 @@
 
       ) {
 
-
-
         return;
 
-
-
       }
-
-
-
-
 
       if (
 
@@ -4013,33 +2445,19 @@
 
       ) {
 
-
-
         showLedgerError(
 
           "This ledger link is incomplete."
 
         );
 
-
-
         return;
 
-
-
       }
-
-
-
-
 
       isLoading =
 
         true;
-
-
-
-
 
       const refreshBtn =
 
@@ -4049,31 +2467,15 @@
 
         );
 
-
-
-
-
       refreshBtn.disabled =
 
         true;
-
-
-
-
 
       refreshBtn.textContent =
 
         "Loading…";
 
-
-
-
-
       setLoadingState();
-
-
-
-
 
       /*
 
@@ -4083,19 +2485,11 @@
 
        */
 
-
-
       const profilePromise =
 
         loadPublicProfile();
 
-
-
-
-
       try {
-
-
 
         const data =
 
@@ -4107,19 +2501,13 @@
 
                 "getCustomerTransactions",
 
-
-
               bid:
 
                 businessId,
 
-
-
               cid:
 
                 customerId,
-
-
 
               env:
 
@@ -4130,10 +2518,6 @@
             15000
 
           );
-
-
-
-
 
         if (
 
@@ -4147,21 +2531,13 @@
 
         ) {
 
-
-
           throw new Error(
 
             "Invalid server response"
 
           );
 
-
-
         }
-
-
-
-
 
         /*
 
@@ -4171,13 +2547,7 @@
 
          */
 
-
-
         await profilePromise;
-
-
-
-
 
         renderLedger(
 
@@ -4185,21 +2555,11 @@
 
         );
 
-
-
       }
-
-
 
       catch (error) {
 
-
-
         let message;
-
-
-
-
 
         if (
 
@@ -4209,17 +2569,11 @@
 
         ) {
 
-
-
           message =
 
             "The server is taking longer than expected. Please try again.";
 
-
-
         }
-
-
 
         else if (
 
@@ -4227,33 +2581,19 @@
 
         ) {
 
-
-
           message =
 
             "You appear to be offline. Check your internet connection and try again.";
 
-
-
         }
 
-
-
         else {
-
-
 
           message =
 
             "We could not load this ledger. Please try again.";
 
-
-
         }
-
-
-
-
 
         showLedgerError(
 
@@ -4261,47 +2601,25 @@
 
         );
 
-
-
       }
 
-
-
       finally {
-
-
 
         isLoading =
 
           false;
 
-
-
-
-
         refreshBtn.disabled =
 
           false;
-
-
-
-
 
         refreshBtn.textContent =
 
           "Refresh";
 
-
-
       }
 
-
-
     }
-
-
-
-
 
     // =====================================================
 
@@ -4309,37 +2627,23 @@
 
     // =====================================================
 
-
-
     function renderLedger(
 
       transactions
 
     ) {
 
-
-
       let received =
 
         0;
-
-
-
-
 
       let paid =
 
         0;
 
-
-
-
-
       transactions.forEach(
 
         transaction => {
-
-
 
           const amount =
 
@@ -4349,10 +2653,6 @@
 
             ) || 0;
 
-
-
-
-
           if (
 
             transaction.type ===
@@ -4361,17 +2661,11 @@
 
           ) {
 
-
-
             received +=
 
               amount;
 
-
-
           }
-
-
 
           else if (
 
@@ -4381,25 +2675,15 @@
 
           ) {
 
-
-
             paid +=
 
               amount;
 
-
-
           }
-
-
 
         }
 
       );
-
-
-
-
 
       renderCards(
 
@@ -4409,10 +2693,6 @@
 
       );
 
-
-
-
-
       setupPayment(
 
         received,
@@ -4421,29 +2701,17 @@
 
       );
 
-
-
-
-
       renderDesktopTransactions(
 
         transactions
 
       );
 
-
-
-
-
       renderMobileTransactions(
 
         transactions
 
       );
-
-
-
-
 
       updateMobileFooter(
 
@@ -4453,8 +2721,6 @@
 
       );
 
-
-
     }
 
     function renderOutstandingBalance(net) {
@@ -4462,36 +2728,29 @@
       const amount =
         Math.abs(net);
 
-
       const amountEl =
         document.getElementById(
           "balanceHeroAmount"
         );
-
 
       const statusEl =
         document.getElementById(
           "balanceHeroStatus"
         );
 
-
       const hintEl =
         document.getElementById(
           "balanceHeroHint"
         );
 
-
       amountEl.textContent =
         formatMoney(amount);
-
 
       amountEl.className =
         "text-3xl sm:text-4xl font-extrabold tracking-tight";
 
-
       statusEl.className =
         "mt-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold";
-
 
       if (net < 0) {
 
@@ -4499,22 +2758,18 @@
           "text-red-300"
         );
 
-
         statusEl.classList.add(
           "bg-red-500/20",
           "text-red-200"
         );
 
-
         statusEl.textContent =
           "You Need to Pay";
-
 
         hintEl.textContent =
           "Amount currently payable";
 
       }
-
 
       else if (net > 0) {
 
@@ -4522,22 +2777,18 @@
           "text-green-300"
         );
 
-
         statusEl.classList.add(
           "bg-green-500/20",
           "text-green-200"
         );
 
-
         statusEl.textContent =
           "You Will Get";
-
 
         hintEl.textContent =
           "Amount receivable by you";
 
       }
-
 
       else {
 
@@ -4545,16 +2796,13 @@
           "text-white"
         );
 
-
         statusEl.classList.add(
           "bg-white/10",
           "text-slate-200"
         );
 
-
         statusEl.textContent =
           "Settled";
-
 
         hintEl.textContent =
           "No outstanding balance";
@@ -4562,13 +2810,6 @@
       }
 
     }
-
-
-
-
-
-
-
 
     // =====================================================
 
@@ -4598,8 +2839,6 @@
 
     // =====================================================
 
-
-
     function renderCards(
 
       received,
@@ -4608,36 +2847,21 @@
 
     ) {
 
-
-
       const net =
 
         paid -
 
         received;
 
-
       renderOutstandingBalance(net);
-
-
-
-
 
       const isYouWillGet =
 
         net > 0;
 
-
-
-
-
       const isSettled =
 
         net === 0;
-
-
-
-
 
       let amountColor;
 
@@ -4645,33 +2869,19 @@
 
       let badge;
 
-
-
-
-
       if (isSettled) {
-
-
 
         amountColor =
 
           "text-gray-200";
 
-
-
-
-
         arrow =
 
-          \`<span class="text-gray-300 text-lg">●</span>\`;
-
-
-
-
+          `<span class="text-gray-300 text-lg">●</span>`;
 
         badge =
 
-          \`
+          `
 
             <span
 
@@ -4697,37 +2907,23 @@
 
             </span>
 
-          \`;
-
-
+          `;
 
       }
 
-
-
       else if (isYouWillGet) {
-
-
 
         amountColor =
 
           "text-green-400";
 
-
-
-
-
         arrow =
 
-          \`<span class="text-green-400 text-lg">↑</span>\`;
-
-
-
-
+          `<span class="text-green-400 text-lg">↑</span>`;
 
         badge =
 
-          \`
+          `
 
             <span
 
@@ -4753,37 +2949,23 @@
 
             </span>
 
-          \`;
-
-
+          `;
 
       }
 
-
-
       else {
-
-
 
         amountColor =
 
           "text-red-400";
 
-
-
-
-
         arrow =
 
-          \`<span class="text-red-400 text-lg">↓</span>\`;
-
-
-
-
+          `<span class="text-red-400 text-lg">↓</span>`;
 
         badge =
 
-          \`
+          `
 
             <span
 
@@ -4809,17 +2991,11 @@
 
             </span>
 
-          \`;
-
-
+          `;
 
       }
 
-
-
-
-
-      const glass = \`
+      const glass = `
 
         relative
 
@@ -4839,11 +3015,7 @@
 
         shadow-lg
 
-      \`;
-
-
-
-
+      `;
 
       document
 
@@ -4853,17 +3025,11 @@
 
         )
 
-        .innerHTML = \`
-
-
+        .innerHTML = `
 
           <!-- CREDIT RECEIVED -->
 
-
-
           <div class="${glass}">
-
-
 
             <div
 
@@ -4885,8 +3051,6 @@
 
             ></div>
 
-
-
             <div
 
               class="
@@ -4898,8 +3062,6 @@
               "
 
             >
-
-
 
               <div
 
@@ -4916,8 +3078,6 @@
                 Credit Received
 
               </div>
-
-
 
               <div
 
@@ -4939,25 +3099,13 @@
 
               </div>
 
-
-
             </div>
-
-
 
           </div>
 
-
-
-
-
           <!-- CASH PAID -->
 
-
-
           <div class="${glass}">
-
-
 
             <div
 
@@ -4979,8 +3127,6 @@
 
             ></div>
 
-
-
             <div
 
               class="
@@ -4992,8 +3138,6 @@
               "
 
             >
-
-
 
               <div
 
@@ -5010,8 +3154,6 @@
                 Cash Paid
 
               </div>
-
-
 
               <div
 
@@ -5033,25 +3175,13 @@
 
               </div>
 
-
-
             </div>
-
-
 
           </div>
 
-
-
-
-
           <!-- NET BALANCE -->
 
-
-
           <div class="${glass}">
-
-
 
             <div
 
@@ -5073,8 +3203,6 @@
 
             ></div>
 
-
-
             <div
 
               class="
@@ -5088,8 +3216,6 @@
               "
 
             >
-
-
 
               <div
 
@@ -5106,10 +3232,6 @@
                 Net Balance
 
               </div>
-
-
-
-
 
               <div
 
@@ -5129,11 +3251,7 @@
 
               >
 
-
-
                 ${arrow}
-
-
 
                 <div
 
@@ -5151,19 +3269,13 @@
 
                   ${formatMoney(
 
-                    Math.abs(net)
+        Math.abs(net)
 
-                  )}
+      )}
 
                 </div>
 
-
-
               </div>
-
-
-
-
 
               <div class="mt-2">
 
@@ -5171,25 +3283,13 @@
 
               </div>
 
-
-
             </div>
-
-
 
           </div>
 
-
-
-        \`;
-
-
+        `;
 
     }
-
-
-
-
 
     // =====================================================
 
@@ -5197,15 +3297,11 @@
 
     // =====================================================
 
-
-
     function renderDesktopTransactions(
 
       transactions
 
     ) {
-
-
 
       const summary =
 
@@ -5215,21 +3311,13 @@
 
         );
 
-
-
-
-
       if (
 
         transactions.length === 0
 
       ) {
 
-
-
-        summary.innerHTML = \`
-
-
+        summary.innerHTML = `
 
           <div
 
@@ -5249,31 +3337,17 @@
 
           </div>
 
-
-
-        \`;
-
-
+        `;
 
         return;
 
-
-
       }
-
-
-
-
 
       const reversed =
 
         [...transactions]
 
           .reverse();
-
-
-
-
 
       summary.innerHTML =
 
@@ -5283,17 +3357,11 @@
 
             transaction => {
 
-
-
               const isCredit =
 
                 transaction.type ===
 
                 "gave";
-
-
-
-
 
               const isPaid =
 
@@ -5301,13 +3369,7 @@
 
                 "got";
 
-
-
-
-
-              return \`
-
-
+              return `
 
                 <div
 
@@ -5331,8 +3393,6 @@
 
                 >
 
-
-
                   <div
 
                     class="
@@ -5345,15 +3405,11 @@
 
                     ${formatDate(
 
-                      transaction.date
+        transaction.date
 
-                    )}
+      )}
 
                   </div>
-
-
-
-
 
                   <div
 
@@ -5369,23 +3425,17 @@
 
                   >
 
-                    ${
+                    ${escapeHTML(
 
-                      escapeHTML(
+        transaction.note ||
 
-                        transaction.note ||
+        "-"
 
-                        "-"
+      )
 
-                      )
-
-                    }
+        }
 
                   </div>
-
-
-
-
 
                   <div
 
@@ -5401,25 +3451,19 @@
 
                   >
 
-                    ${
+                    ${isCredit
 
-                      isCredit
+          ? formatMoney(
 
-                        ? formatMoney(
+            transaction.amount
 
-                            transaction.amount
+          )
 
-                          )
+          : ""
 
-                        : ""
-
-                    }
+        }
 
                   </div>
-
-
-
-
 
                   <div
 
@@ -5435,31 +3479,23 @@
 
                   >
 
-                    ${
+                    ${isPaid
 
-                      isPaid
+          ? formatMoney(
 
-                        ? formatMoney(
+            transaction.amount
 
-                            transaction.amount
+          )
 
-                          )
+          : ""
 
-                        : ""
-
-                    }
+        }
 
                   </div>
 
-
-
                 </div>
 
-
-
-              \`;
-
-
+              `;
 
             }
 
@@ -5467,13 +3503,7 @@
 
           .join("");
 
-
-
     }
-
-
-
-
 
     // =====================================================
 
@@ -5481,15 +3511,11 @@
 
     // =====================================================
 
-
-
     function renderMobileTransactions(
 
       transactions
 
     ) {
-
-
 
       const container =
 
@@ -5499,21 +3525,13 @@
 
         );
 
-
-
-
-
       if (
 
         transactions.length === 0
 
       ) {
 
-
-
-        container.innerHTML = \`
-
-
+        container.innerHTML = `
 
           <div
 
@@ -5541,31 +3559,17 @@
 
           </div>
 
-
-
-        \`;
-
-
+        `;
 
         return;
 
-
-
       }
-
-
-
-
 
       const reversed =
 
         [...transactions]
 
           .reverse();
-
-
-
-
 
       container.innerHTML =
 
@@ -5575,17 +3579,11 @@
 
             transaction => {
 
-
-
               const isCredit =
 
                 transaction.type ===
 
                 "gave";
-
-
-
-
 
               const amountClass =
 
@@ -5595,10 +3593,6 @@
 
                   : "text-green-600";
 
-
-
-
-
               const label =
 
                 isCredit
@@ -5606,10 +3600,6 @@
                   ? "Credit Received"
 
                   : "Cash Paid";
-
-
-
-
 
               const badgeClass =
 
@@ -5619,13 +3609,7 @@
 
                   : "bg-green-50 text-green-700";
 
-
-
-
-
-              return \`
-
-
+              return `
 
                 <article
 
@@ -5647,8 +3631,6 @@
 
                 >
 
-
-
                   <div
 
                     class="
@@ -5665,8 +3647,6 @@
 
                   >
 
-
-
                     <div
 
                       class="
@@ -5676,8 +3656,6 @@
                       "
 
                     >
-
-
 
                       <div
 
@@ -5693,15 +3671,11 @@
 
                         ${formatDate(
 
-                          transaction.date
+          transaction.date
 
-                        )}
+        )}
 
                       </div>
-
-
-
-
 
                       <div
 
@@ -5721,27 +3695,19 @@
 
                       >
 
-                        ${
+                        ${escapeHTML(
 
-                          escapeHTML(
+          transaction.note ||
 
-                            transaction.note ||
+          "-"
 
-                            "-"
+        )
 
-                          )
-
-                        }
+        }
 
                       </div>
 
-
-
                     </div>
-
-
-
-
 
                     <div
 
@@ -5754,8 +3720,6 @@
                       "
 
                     >
-
-
 
                       <div
 
@@ -5773,15 +3737,11 @@
 
                         ${formatMoney(
 
-                          transaction.amount
+          transaction.amount
 
-                        )}
+        )}
 
                       </div>
-
-
-
-
 
                       <div
 
@@ -5809,23 +3769,13 @@
 
                       </div>
 
-
-
                     </div>
-
-
 
                   </div>
 
-
-
                 </article>
 
-
-
-              \`;
-
-
+              `;
 
             }
 
@@ -5833,21 +3783,13 @@
 
           .join("");
 
-
-
     }
-
-
-
-
 
     // =====================================================
 
     // PAYMENT
 
     // =====================================================
-
-
 
     function setupPayment(
 
@@ -5857,17 +3799,11 @@
 
     ) {
 
-
-
       const net =
 
         paid -
 
         received;
-
-
-
-
 
       const payBox =
 
@@ -5877,10 +3813,6 @@
 
         );
 
-
-
-
-
       const upiBtn =
 
         document.getElementById(
@@ -5888,10 +3820,6 @@
           "upiBtn"
 
         );
-
-
-
-
 
       const qrBtn =
 
@@ -5901,10 +3829,6 @@
 
         );
 
-
-
-
-
       const qrArea =
 
         document.getElementById(
@@ -5913,13 +3837,7 @@
 
         );
 
-
-
-
-
       // RESET
-
-
 
       payBox.classList.add(
 
@@ -5927,19 +3845,11 @@
 
       );
 
-
-
-
-
       upiBtn.classList.add(
 
         "hidden"
 
       );
-
-
-
-
 
       qrBtn.classList.add(
 
@@ -5947,19 +3857,11 @@
 
       );
 
-
-
-
-
       qrArea.classList.add(
 
         "hidden"
 
       );
-
-
-
-
 
       qrBtn.setAttribute(
 
@@ -5969,25 +3871,13 @@
 
       );
 
-
-
-
-
       qrBtn.textContent =
 
         "Show QR Code";
 
-
-
-
-
       mainQRCreated =
 
         false;
-
-
-
-
 
       document
 
@@ -5997,17 +3887,9 @@
 
           "";
 
-
-
-
-
       const business =
 
         publicProfile.business;
-
-
-
-
 
       /*
 
@@ -6021,33 +3903,19 @@
 
        */
 
-
-
       if (
 
         net >= 0
 
       ) {
 
-
-
         return;
 
-
-
       }
-
-
-
-
 
       const amount =
 
         Math.abs(net);
-
-
-
-
 
       const upi =
 
@@ -6058,10 +3926,6 @@
           ""
 
         ).trim();
-
-
-
-
 
       const payeeName =
 
@@ -6075,10 +3939,6 @@
 
         ).trim();
 
-
-
-
-
       /*
 
        * If business has no UPI ID,
@@ -6087,21 +3947,11 @@
 
        */
 
-
-
       if (!upi) {
-
-
 
         return;
 
-
-
       }
-
-
-
-
 
       currentUPILink =
 
@@ -6115,10 +3965,6 @@
 
         );
 
-
-
-
-
       document
 
         .getElementById(
@@ -6130,10 +3976,6 @@
         .textContent =
 
           formatMoney(amount);
-
-
-
-
 
       document
 
@@ -6147,19 +3989,11 @@
 
           payeeName;
 
-
-
-
-
       payBox.classList.remove(
 
         "hidden"
 
       );
-
-
-
-
 
       const isMobile =
 
@@ -6171,21 +4005,11 @@
 
           );
 
-
-
-
-
       if (isMobile) {
-
-
 
         upiBtn.href =
 
           currentUPILink;
-
-
-
-
 
         upiBtn.classList.remove(
 
@@ -6193,15 +4017,9 @@
 
         );
 
-
-
       }
 
-
-
       else {
-
-
 
         qrBtn.classList.remove(
 
@@ -6209,17 +4027,9 @@
 
         );
 
-
-
       }
 
-
-
     }
-
-
-
-
 
     function buildUPILink(
 
@@ -6231,15 +4041,9 @@
 
     ) {
 
-
-
       const params =
 
         new URLSearchParams();
-
-
-
-
 
       params.set(
 
@@ -6249,10 +4053,6 @@
 
       );
 
-
-
-
-
       params.set(
 
         "pn",
@@ -6260,10 +4060,6 @@
         payeeName
 
       );
-
-
-
-
 
       params.set(
 
@@ -6277,10 +4073,6 @@
 
       );
 
-
-
-
-
       params.set(
 
         "cu",
@@ -6288,10 +4080,6 @@
         "INR"
 
       );
-
-
-
-
 
       return (
 
@@ -6301,21 +4089,13 @@
 
       );
 
-
-
     }
-
-
-
-
 
     // =====================================================
 
     // LOCAL QR GENERATION
 
     // =====================================================
-
-
 
     function createLocalQR(
       containerId,
@@ -6327,21 +4107,17 @@
           containerId
         );
 
-
       const fallbackImage =
         document.getElementById(
           fallbackImageId
         );
 
-
       container.innerHTML =
         "";
-
 
       fallbackImage.classList.add(
         "hidden"
       );
-
 
       /*
        * First preference:
@@ -6354,22 +4130,18 @@
           ""
         ).trim();
 
-
       if (configuredQR) {
 
         fallbackImage.src =
           configuredQR;
 
-
         fallbackImage.classList.remove(
           "hidden"
         );
 
-
         return true;
 
       }
-
 
       /*
        * Fallback:
@@ -6399,21 +4171,15 @@
           }
         );
 
-
         return true;
 
       }
-
 
       return false;
 
     }
 
-
-
     function showQR() {
-
-
 
       const area =
 
@@ -6423,10 +4189,6 @@
 
         );
 
-
-
-
-
       const button =
 
         document.getElementById(
@@ -6434,10 +4196,6 @@
           "qrBtn"
 
         );
-
-
-
-
 
       const isHidden =
 
@@ -6447,17 +4205,9 @@
 
         );
 
-
-
-
-
       if (isHidden) {
 
-
-
         if (!mainQRCreated) {
-
-
 
           mainQRCreated =
 
@@ -6469,13 +4219,7 @@
 
             );
 
-
-
         }
-
-
-
-
 
         area.classList.remove(
 
@@ -6483,17 +4227,9 @@
 
         );
 
-
-
-
-
         button.textContent =
 
           "Hide QR Code";
-
-
-
-
 
         button.setAttribute(
 
@@ -6503,15 +4239,9 @@
 
         );
 
-
-
       }
 
-
-
       else {
-
-
 
         area.classList.add(
 
@@ -6519,17 +4249,9 @@
 
         );
 
-
-
-
-
         button.textContent =
 
           "Show QR Code";
-
-
-
-
 
         button.setAttribute(
 
@@ -6539,17 +4261,9 @@
 
         );
 
-
-
       }
 
-
-
     }
-
-
-
-
 
     // =====================================================
 
@@ -6557,21 +4271,11 @@
 
     // =====================================================
 
-
-
     function downloadPDF() {
-
-
 
       window.print();
 
-
-
     }
-
-
-
-
 
     // =====================================================
 
@@ -6579,15 +4283,9 @@
 
     // =====================================================
 
-
-
     let lastScroll =
 
       0;
-
-
-
-
 
     const mobileFooter =
 
@@ -6597,25 +4295,15 @@
 
       );
 
-
-
-
-
     window.addEventListener(
 
       "scroll",
 
       () => {
 
-
-
         const current =
 
           window.pageYOffset;
-
-
-
-
 
         if (
 
@@ -6625,33 +4313,19 @@
 
         ) {
 
-
-
           mobileFooter.style.transform =
 
             "translateY(110%)";
 
-
-
         }
 
-
-
         else {
-
-
 
           mobileFooter.style.transform =
 
             "translateY(0)";
 
-
-
         }
-
-
-
-
 
         lastScroll =
 
@@ -6663,8 +4337,6 @@
 
           );
 
-
-
       },
 
       {
@@ -6675,10 +4347,6 @@
 
     );
 
-
-
-
-
     function updateMobileFooter(
 
       received,
@@ -6687,17 +4355,11 @@
 
     ) {
 
-
-
       const net =
 
         paid -
 
         received;
-
-
-
-
 
       const text =
 
@@ -6707,10 +4369,6 @@
 
         );
 
-
-
-
-
       const button =
 
         document.getElementById(
@@ -6719,27 +4377,15 @@
 
         );
 
-
-
-
-
       button.classList.add(
 
         "hidden"
 
       );
 
-
-
-
-
       button.onclick =
 
         null;
-
-
-
-
 
       if (
 
@@ -6747,23 +4393,13 @@
 
       ) {
 
-
-
         const amount =
 
           Math.abs(net);
 
-
-
-
-
         text.textContent =
 
-          \`Pay ${formatMoney(amount)}\`;
-
-
-
-
+          `Pay ${formatMoney(amount)}`;
 
         /*
 
@@ -6773,8 +4409,6 @@
 
          */
 
-
-
         if (
 
           publicProfile.business
@@ -6783,17 +4417,11 @@
 
         ) {
 
-
-
           button.classList.remove(
 
             "hidden"
 
           );
-
-
-
-
 
           button.onclick =
 
@@ -6805,15 +4433,9 @@
 
               );
 
-
-
         }
 
-
-
       }
-
-
 
       else if (
 
@@ -6821,37 +4443,21 @@
 
       ) {
 
-
-
         text.textContent =
 
-          \`You’ll get ${formatMoney(net)}\`;
-
-
+          `You’ll get ${formatMoney(net)}`;
 
       }
 
-
-
       else {
-
-
 
         text.textContent =
 
           "Settled";
 
-
-
       }
 
-
-
     }
-
-
-
-
 
     // =====================================================
 
@@ -6859,23 +4465,15 @@
 
     // =====================================================
 
-
-
     function openPaymentDrawer(
 
       amount
 
     ) {
 
-
-
       const business =
 
         publicProfile.business;
-
-
-
-
 
       const upi =
 
@@ -6887,23 +4485,11 @@
 
         ).trim();
 
-
-
-
-
       if (!upi) {
-
-
 
         return;
 
-
-
       }
-
-
-
-
 
       const payeeName =
 
@@ -6917,10 +4503,6 @@
 
         ).trim();
 
-
-
-
-
       currentUPILink =
 
         buildUPILink(
@@ -6932,10 +4514,6 @@
           amount
 
         );
-
-
-
-
 
       document
 
@@ -6949,10 +4527,6 @@
 
           formatMoney(amount);
 
-
-
-
-
       document
 
         .getElementById(
@@ -6965,10 +4539,6 @@
 
           payeeName;
 
-
-
-
-
       document
 
         .getElementById(
@@ -6980,10 +4550,6 @@
         .href =
 
           currentUPILink;
-
-
-
-
 
       document
 
@@ -6999,10 +4565,6 @@
 
         );
 
-
-
-
-
       document
 
         .getElementById(
@@ -7014,10 +4576,6 @@
         .textContent =
 
           "Show QR Code";
-
-
-
-
 
       document
 
@@ -7035,10 +4593,6 @@
 
         );
 
-
-
-
-
       document
 
         .getElementById(
@@ -7051,17 +4605,9 @@
 
           "";
 
-
-
-
-
       drawerQRCreated =
 
         false;
-
-
-
-
 
       document
 
@@ -7075,17 +4621,9 @@
 
           "translateY(0)";
 
-
-
     }
 
-
-
-
-
     function closeDrawer() {
-
-
 
       document
 
@@ -7099,17 +4637,9 @@
 
           "translateY(100%)";
 
-
-
     }
 
-
-
-
-
     function toggleDrawerQR() {
-
-
 
       const area =
 
@@ -7119,10 +4649,6 @@
 
         );
 
-
-
-
-
       const button =
 
         document.getElementById(
@@ -7130,10 +4656,6 @@
           "drawerQrBtn"
 
         );
-
-
-
-
 
       const isHidden =
 
@@ -7143,17 +4665,9 @@
 
         );
 
-
-
-
-
       if (isHidden) {
 
-
-
         if (!drawerQRCreated) {
-
-
 
           drawerQRCreated =
 
@@ -7165,13 +4679,7 @@
 
             );
 
-
-
         }
-
-
-
-
 
         area.classList.remove(
 
@@ -7179,17 +4687,9 @@
 
         );
 
-
-
-
-
         button.textContent =
 
           "Hide QR Code";
-
-
-
-
 
         button.setAttribute(
 
@@ -7199,15 +4699,9 @@
 
         );
 
-
-
       }
 
-
-
       else {
-
-
 
         area.classList.add(
 
@@ -7215,17 +4709,9 @@
 
         );
 
-
-
-
-
         button.textContent =
 
           "Show QR Code";
-
-
-
-
 
         button.setAttribute(
 
@@ -7235,17 +4721,9 @@
 
         );
 
-
-
       }
 
-
-
     }
-
-
-
-
 
     // =====================================================
 
@@ -7253,15 +4731,11 @@
 
     // =====================================================
 
-
-
     document.addEventListener(
 
       "keydown",
 
       event => {
-
-
 
         if (
 
@@ -7271,23 +4745,13 @@
 
         ) {
 
-
-
           closeDrawer();
 
-
-
         }
-
-
 
       }
 
     );
-
-
-
-
 
     // =====================================================
 
@@ -7295,18 +4759,10 @@
 
     // =====================================================
 
-
-
     loadSummary();
-
-
 
   </script>
 
-
-
 </body>
-
-
 
 </html>

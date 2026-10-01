@@ -671,26 +671,53 @@ window.setFAB = function (
 
   window.addEventListener("load", () => {
 
-    const sidebar =
-      document.getElementById("sidebar");
+  const sidebar =
+    document.getElementById("sidebar");
 
-    if (!sidebar) return;
+  if (!sidebar) return;
 
-    if (isMobileView()) {
+  if (isMobileView()) {
 
-      sidebar.style.position = "fixed";
-      sidebar.style.top = "0";
-      sidebar.style.left = "0";
-      sidebar.style.height = "100dvh";
-      sidebar.style.zIndex = "50";
+    sidebar.style.position = "fixed";
+    sidebar.style.top = "0";
+    sidebar.style.left = "0";
 
-      sidebar.style.transform =
-        "translateX(-100%)";
+    /*
+     * iPhone / mobile sidebar height.
+     */
+    sidebar.style.height = "100dvh";
+    sidebar.style.maxHeight = "100dvh";
 
-      sidebar.style.transition =
-        "transform 0.3s ease";
-    }
-  });
+    /*
+     * Allow the entire sidebar to scroll vertically.
+     */
+    sidebar.style.overflowY = "auto";
+    sidebar.style.overflowX = "hidden";
+
+    /*
+     * Smooth iPhone Safari scrolling.
+     */
+    sidebar.style.webkitOverflowScrolling = "touch";
+    sidebar.style.overscrollBehaviorY = "contain";
+    sidebar.style.touchAction = "pan-y";
+
+    /*
+     * Keep the final menu item above the
+     * iPhone home indicator.
+     */
+    sidebar.style.paddingBottom =
+      "calc(16px + env(safe-area-inset-bottom))";
+
+    sidebar.style.boxSizing = "border-box";
+    sidebar.style.zIndex = "50";
+
+    sidebar.style.transform =
+      "translateX(-100%)";
+
+    sidebar.style.transition =
+      "transform 0.3s ease";
+  }
+});
 
 
   window.toggleSidebar = function () {

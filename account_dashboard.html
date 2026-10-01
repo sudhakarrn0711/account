@@ -1,3055 +1,6321 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
+
 
 <head>
 
+
+
   <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+
 
   <meta
-    name="theme-color"
-    content="#f1f5f9"
+
+    name="viewport"
+
+    content="width=device-width, initial-scale=1.0"
+
   >
+
+
+
+  <meta
+
+    name="theme-color"
+
+    content="#f1f5f9"
+
+  >
+
+
 
   <title>Customer Ledger</title>
 
 
+
+
+
   <!-- Tailwind -->
+
   <script src="https://cdn.tailwindcss.com"></script>
 
 
+
+
+
   <!--
+
     QRCode.js
+
+
 
     QR is generated locally in the customer's browser.
 
+
+
     The UPI payment URI is NOT sent to an external
+
     QR generation API.
+
   -->
+
   <script
+
     src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+
     defer
+
   ></script>
+
+
+
 
 
   <style>
 
+
+
     html {
+
       scroll-behavior: smooth;
+
     }
+
+
+
 
 
     body {
+
       -webkit-font-smoothing: antialiased;
+
       text-rendering: optimizeLegibility;
+
     }
 
 
-    #summaryCards > div {
+
+
+
+#summaryCards > div {
+
       transition:
+
         transform 0.2s ease,
+
         box-shadow 0.2s ease;
+
     }
+
+
+
 
 
     @media (hover: hover) {
 
+
+
       #summaryCards > div:hover {
+
         transform: translateY(-3px);
+
       }
 
+
+
     }
+
+
+
 
 
     .ledger-scroll {
+
       overflow-x: auto;
+
       -webkit-overflow-scrolling: touch;
+
     }
+
+
+
 
 
     .ledger-table {
+
       min-width: 42rem;
+
     }
 
 
+
+
+
     /*
+
      * Desktop table.
+
      */
+
+
 
     #desktopLedger {
+
       display: block;
+
     }
+
+
+
 
 
     /*
+
      * Mobile transaction cards.
+
      */
 
+
+
     #mobileLedger {
+
       display: none;
+
     }
+
+
+
 
 
     @media (max-width: 640px) {
 
+
+
       body {
+
         padding:
+
           0.75rem
+
           0.75rem
+
           6.5rem;
+
       }
+
+
+
 
 
       #summaryCards {
+
         grid-template-columns: 1fr;
+
       }
+
+
+
 
 
       #desktopLedger {
+
         display: none;
+
       }
+
+
+
 
 
       #mobileLedger {
+
         display: block;
+
       }
 
+
+
     }
+
+
+
 
 
     /*
+
      * Loading skeleton.
+
      */
 
+
+
     .skeleton {
+
       position: relative;
+
       overflow: hidden;
+
       background: #e5e7eb;
+
     }
+
+
+
 
 
     .skeleton::after {
 
+
+
       content: "";
+
+
 
       position: absolute;
 
+
+
       inset: 0;
+
+
 
       transform: translateX(-100%);
 
+
+
       background:
+
         linear-gradient(
+
           90deg,
+
           transparent,
+
           rgba(255, 255, 255, 0.75),
+
           transparent
+
         );
 
+
+
       animation:
+
         skeleton-loading
+
         1.3s
+
         infinite;
 
+
+
     }
+
+
+
 
 
     @keyframes skeleton-loading {
 
+
+
       100% {
+
         transform: translateX(100%);
+
       }
 
+
+
     }
 
 
+
+
+
     /*
+
      * Better keyboard focus.
+
      */
+
+
 
     button:focus-visible,
+
     a:focus-visible {
 
+
+
       outline:
+
         3px solid
+
         rgba(37, 99, 235, 0.45);
 
+
+
       outline-offset:
+
         3px;
 
+
+
     }
 
 
+
+
+
     /*
+
      * QRCode.js creates either canvas or img.
+
      */
+
+
 
     .qr-container canvas,
+
     .qr-container img {
 
+
+
       margin:
+
         0 auto;
 
+
+
       max-width:
+
         100%;
 
+
+
       height:
+
         auto;
 
+
+
       border-radius:
+
         0.75rem;
+
+
 
     }
 
 
+
+
+
     /*
+
      * PRINT / PDF
+
      */
+
+
 
     @media print {
 
+
+
       @page {
+
         size: A4;
+
         margin: 12mm;
+
       }
+
+
+
 
 
       body {
 
+
+
         background:
+
           white !important;
 
+
+
         color:
+
           black !important;
 
+
+
         padding:
+
           0 !important;
 
+
+
       }
+
+
+
 
 
       #pdfBtn,
+
       #payBox,
+
       #mobileFooter,
+
       #paymentDrawer,
+
       .screen-only {
 
+
+
         display:
+
           none !important;
 
+
+
       }
+
+
+
 
 
       #mainLedgerCard {
 
+
+
         max-width:
+
           none !important;
+
+
 
         box-shadow:
+
           none !important;
 
+
+
         border:
+
           1px solid #e5e7eb;
 
+
+
       }
+
+      #balanceHero {
+
+        background: #ffffff !important;
+        color: #111827 !important;
+        box-shadow: none !important;
+        border: 1px solid #d1d5db !important;
+
+      }
+
+      #balanceHeroHeading,
+      #balanceHeroAmount,
+      #balanceHeroStatus,
+      #balanceHeroHint {
+
+        color: #111827 !important;
+
+      }
+
+
+
+
+
 
 
       #summaryCards {
 
+
+
         display:
+
           grid !important;
 
+
+
         grid-template-columns:
+
           repeat(3, 1fr) !important;
 
+
+
       }
+
+
+
 
 
       #summaryCards > div {
 
+
+
         background:
+
           #ffffff !important;
 
+
+
         color:
+
           #111827 !important;
 
+
+
         box-shadow:
+
           none !important;
 
+
+
         border:
+
           1px solid #d1d5db !important;
 
+
+
       }
+
+
+
 
 
       #summaryCards .text-gray-300 {
 
+
+
         color:
+
           #4b5563 !important;
 
+
+
       }
+
+
+
 
 
       #desktopLedger {
+
         display: block !important;
+
       }
+
+
+
 
 
       #mobileLedger {
+
         display: none !important;
+
       }
+
+
+
 
 
       .ledger-scroll {
 
+
+
         overflow:
+
           visible !important;
 
+
+
       }
+
+
+
 
 
       .ledger-table {
 
+
+
         min-width:
+
           0 !important;
 
+
+
         width:
+
           100% !important;
 
+
+
       }
+
+
+
 
 
       footer {
 
+
+
         page-break-inside:
+
           avoid;
+
+
 
       }
 
+
+
     }
 
+
+
   </style>
+
+
 
 </head>
 
 
+
+
+
 <body
+
   class="
+
     bg-slate-100
+
     text-gray-800
+
     p-4
+
     pb-24
+
   "
+
 >
 
 
+
+
+
   <!-- =====================================================
+
        MAIN
+
        ===================================================== -->
+
+
 
   <main>
 
+
+
     <section
+
       id="mainLedgerCard"
+
       class="
+
         max-w-4xl
+
         mx-auto
+
         bg-white
+
         rounded-2xl
+
         p-4
+
         sm:p-6
+
         shadow-sm
+
         border
+
         border-slate-200
+
       "
+
     >
 
 
+
+
+
       <!-- =================================================
+
            HEADER
+
            ================================================= -->
 
+
+
       <header
+
         class="
+
           flex
+
           flex-col
+
           sm:flex-row
+
           sm:items-center
+
           sm:justify-between
+
           gap-4
+
           border-b
+
           border-gray-200
+
           pb-4
+
         "
+
       >
+
+
+
 
 
         <div class="min-w-0">
 
+
+
           <div
+
             id="businessName"
             class="
               text-xl
               sm:text-2xl
-              font-bold
-              text-gray-900
+              font-extrabold
+              text-slate-950
+              tracking-tight
               truncate
             "
+
           >
+
             Business
+
           </div>
+
+
+
 
 
           <div
+
             id="customerIdentity"
+
             class="
+
               mt-1
+
               text-sm
+
               text-gray-500
+
             "
+
           >
-            Customer Ledger
+            Customer Account Statement
           </div>
 
+
+
         </div>
+
+
+
 
 
         <div
+
           class="
+
             flex
+
             items-center
+
             gap-2
+
             shrink-0
+
           "
+
         >
 
+
+
           <div
+
             class="
+
               hidden
+
               sm:block
+
               text-sm
+
               text-gray-500
+
               mr-2
+
             "
+
           >
+
             <span id="today"></span>
+
           </div>
 
 
+
+
+
           <button
+
             id="pdfBtn"
+
             type="button"
+
             onclick="downloadPDF()"
+
             class="
+
               inline-flex
+
               items-center
+
               justify-center
+
               gap-2
+
               bg-blue-600
+
               hover:bg-blue-700
+
               text-white
+
               px-4
+
               py-2.5
+
               rounded-xl
+
               text-sm
+
               font-semibold
+
               transition
+
             "
+
             aria-label="Print or save ledger as PDF"
+
           >
+
             <span aria-hidden="true">⬇️</span>
+
             PDF
+
           </button>
 
+
+
         </div>
+
+
 
       </header>
 
 
+
+
+
       <!-- =================================================
+
            STATEMENT LABEL
+
            ================================================= -->
 
+
+
       <div
+
         class="
+
           flex
+
           items-center
+
           justify-between
+
           gap-3
+
           mt-4
+
         "
+
       >
+
+
 
         <div>
 
-          <div
-            class="
-              text-xs
-              uppercase
-              tracking-wider
-              font-semibold
-              text-gray-400
-            "
-          >
-            Customer Statement
-          </div>
+
 
           <div
+
+            class="
+
+              text-xs
+
+              uppercase
+
+              tracking-wider
+
+              font-semibold
+
+              text-gray-400
+
+            "
+
+          >
+
+            Customer Statement
+
+          </div>
+
+
+
+          <div
+
             id="statementCustomerName"
             class="
-              text-base
-              font-semibold
-              text-gray-800
-              mt-0.5
+              text-xl
+              sm:text-2xl
+              font-bold
+              text-blue-700
+              mt-1
+              tracking-tight
             "
+
           >
+
             Loading…
+
           </div>
 
+
+
         </div>
+
+
+
 
 
         <div
+
           class="
+
             sm:hidden
+
             text-xs
+
             text-gray-400
+
           "
+
         >
+
           <span id="mobileToday"></span>
+
         </div>
+
+
 
       </div>
-
-
       <!-- =================================================
-           KPI CARDS
+           OUTSTANDING BALANCE
            ================================================= -->
 
       <section
-        id="summaryCards"
+        id="balanceHero"
         class="
-          grid
-          grid-cols-3
-          gap-3
           mt-5
-        "
-        aria-label="Ledger summary"
-      >
-
-        <!-- Initial skeleton -->
-
-        <div
-          class="
-            skeleton
-            h-28
-            rounded-2xl
-          "
-        ></div>
-
-        <div
-          class="
-            skeleton
-            h-28
-            rounded-2xl
-          "
-        ></div>
-
-        <div
-          class="
-            skeleton
-            h-28
-            rounded-2xl
-          "
-        ></div>
-
-      </section>
-
-
-      <!-- =================================================
-           PAYMENT BOX
-           ================================================= -->
-
-      <section
-        id="payBox"
-        class="
-          bg-gray-900
-          text-white
           rounded-2xl
-          p-4
-          sm:p-5
-          mt-5
-          hidden
-          screen-only
+          border
+          border-slate-200
+          bg-gradient-to-br
+          from-slate-950
+          to-slate-800
+          text-white
+          p-5
+          sm:p-6
+          shadow-lg
         "
-        aria-labelledby="paymentHeading"
+        aria-labelledby="balanceHeroHeading"
+        aria-live="polite"
       >
+        <div class="flex items-start justify-between gap-4">
 
-        <div
-          class="
-            flex
-            items-start
-            justify-between
-            gap-4
-            mb-4
-          "
-        >
-
-          <div>
-
-            <h2
-              id="paymentHeading"
-              class="
-                font-semibold
-                text-base
-              "
-            >
-              Pay Outstanding Balance
-            </h2>
-
+          <div class="min-w-0">
 
             <div
-              id="paymentBusinessName"
+              id="balanceHeroHeading"
               class="
                 text-xs
-                text-gray-400
-                mt-1
+                font-semibold
+                uppercase
+                tracking-wider
+                text-slate-400
               "
             >
-              Secure UPI payment
+              Outstanding Balance
+            </div>
+
+            <div
+              id="balanceHeroStatus"
+              class="
+                mt-2
+                inline-flex
+                items-center
+                rounded-full
+                bg-white/10
+                px-3
+                py-1
+                text-xs
+                font-semibold
+                text-slate-200
+              "
+            >
+              Loading…
             </div>
 
           </div>
 
 
-          <div
-            id="paymentAmount"
-            class="
-              text-lg
-              font-bold
-              text-red-300
-              whitespace-nowrap
-            "
-          ></div>
+          <div class="text-right shrink-0">
+
+            <div
+              id="balanceHeroAmount"
+              class="
+                text-3xl
+                sm:text-4xl
+                font-extrabold
+                tracking-tight
+                text-white
+              "
+            >
+              ₹0
+            </div>
+
+            <div
+              id="balanceHeroHint"
+              class="
+                mt-1
+                text-xs
+                text-slate-400
+              "
+            >
+              Current ledger balance
+            </div>
+
+          </div>
 
         </div>
+      </section>
+
+
+
+
+
+
+
+      <!-- =================================================
+
+           KPI CARDS
+
+           ================================================= -->
+
+
+
+      <section
+
+        id="summaryCards"
+
+        class="
+
+          grid
+
+          grid-cols-3
+
+          gap-3
+
+          mt-5
+
+        "
+
+        aria-label="Ledger summary"
+
+      >
+
+
+
+        <!-- Initial skeleton -->
+
+
+
+        <div
+
+          class="
+
+            skeleton
+
+            h-28
+
+            rounded-2xl
+
+          "
+
+        ></div>
+
+
+
+        <div
+
+          class="
+
+            skeleton
+
+            h-28
+
+            rounded-2xl
+
+          "
+
+        ></div>
+
+
+
+        <div
+
+          class="
+
+            skeleton
+
+            h-28
+
+            rounded-2xl
+
+          "
+
+        ></div>
+
+
+
+      </section>
+
+
+
+
+
+      <!-- =================================================
+
+           PAYMENT BOX
+
+           ================================================= -->
+
+
+
+      <section
+
+        id="payBox"
+
+        class="
+
+          bg-gray-900
+
+          text-white
+
+          rounded-2xl
+
+          p-4
+
+          sm:p-5
+
+          mt-5
+
+          hidden
+
+          screen-only
+
+        "
+
+        aria-labelledby="paymentHeading"
+
+      >
+
+
+
+        <div
+
+          class="
+
+            flex
+
+            items-start
+
+            justify-between
+
+            gap-4
+
+            mb-4
+
+          "
+
+        >
+
+
+
+          <div>
+
+
+
+            <h2
+
+              id="paymentHeading"
+
+              class="
+
+                font-semibold
+
+                text-base
+
+              "
+
+            >
+
+              Pay Outstanding Balance
+
+            </h2>
+
+
+
+
+
+            <div
+
+              id="paymentBusinessName"
+
+              class="
+
+                text-xs
+
+                text-gray-400
+
+                mt-1
+
+              "
+
+            >
+
+              Secure UPI payment
+
+            </div>
+
+
+
+          </div>
+
+
+
+
+
+          <div
+
+            id="paymentAmount"
+
+            class="
+
+              text-lg
+
+              font-bold
+
+              text-red-300
+
+              whitespace-nowrap
+
+            "
+
+          ></div>
+
+
+
+        </div>
+
+
+
 
 
         <!-- Mobile UPI -->
 
+
+
         <a
+
           id="upiBtn"
+
           href="#"
+
           class="
+
             hidden
+
             text-center
+
             bg-green-600
+
             hover:bg-green-700
+
             text-white
+
             p-3
+
             rounded-xl
+
             mb-3
+
             font-semibold
+
             transition
+
           "
+
           aria-label="Pay outstanding balance via UPI"
+
         >
+
           Pay via UPI
+
         </a>
+
+
+
 
 
         <!-- Desktop QR -->
 
+
+
         <button
+
           id="qrBtn"
+
           type="button"
+
           onclick="showQR()"
+
           class="
+
             hidden
+
             w-full
+
             bg-blue-600
+
             hover:bg-blue-700
+
             text-white
+
             p-3
+
             rounded-xl
+
             mb-3
+
             font-semibold
+
             transition
+
           "
+
           aria-expanded="false"
+
           aria-controls="qrArea"
+
         >
+
           Show QR Code
+
         </button>
 
 
+
+
+
         <div
+
           id="qrArea"
+
           class="
+
             hidden
+
             mt-4
+
             bg-white
+
             rounded-2xl
+
             p-4
+
             text-center
+
           "
+
         >
 
+
+
           <div
+
             id="qrCode"
+
             class="
+
               qr-container
+
               flex
+
               justify-center
+
             "
+
           ></div>
+
+
+
 
 
           <img
+
             id="qrFallbackImage"
+
             class="
+
               hidden
+
               w-48
+
               max-w-full
+
               mx-auto
+
               rounded-xl
+
             "
+
             alt="Business payment QR code"
+
           >
 
 
+
+
+
           <div
+
             id="qrPayee"
+
             class="
+
               text-xs
+
               text-gray-500
+
               mt-3
+
             "
+
           ></div>
+
+
 
         </div>
 
+
+
       </section>
+
+
+
 
 
       <!-- =================================================
+
            TRANSACTION SECTION
+
            ================================================= -->
 
+
+
       <section
+
         class="
+
           mt-7
+
         "
+
         aria-labelledby="transactionHeading"
+
       >
 
 
+
+
+
         <div
+
           class="
+
             flex
+
             items-center
+
             justify-between
+
             gap-3
+
             mb-3
+
           "
+
         >
+
+
 
           <div>
 
+
+
             <h2
+
               id="transactionHeading"
+
               class="
+
                 text-base
+
                 font-bold
+
                 text-gray-900
+
               "
+
             >
+
               Transaction History
+
             </h2>
 
+
+
             <div
+
               class="
+
                 text-xs
+
                 text-gray-400
+
                 mt-0.5
+
               "
+
             >
+
               Latest transactions shown first
+
             </div>
 
+
+
           </div>
+
+
+
 
 
           <button
+
             id="refreshBtn"
+
             type="button"
+
             onclick="loadSummary(true)"
+            aria-label="Refresh customer ledger"
+
             class="
+
               screen-only
+
               text-xs
+
               font-semibold
+
               text-blue-600
+
               hover:text-blue-700
+
               bg-blue-50
+
               hover:bg-blue-100
+
               px-3
+
               py-2
+
               rounded-lg
+
               transition
+
             "
+
           >
+
             Refresh
+
           </button>
+
+
 
         </div>
 
 
+
+
+
         <!-- ===============================================
+
              STATUS / ERROR
+
              =============================================== -->
 
+
+
         <div
+
           id="ledgerStatus"
+
           class="hidden"
+
           role="status"
+
           aria-live="polite"
+
         ></div>
 
 
+
+
+
         <!-- ===============================================
+
              DESKTOP TABLE
+
              =============================================== -->
 
+
+
         <div
+
           id="desktopLedger"
+
           class="
+
             ledger-scroll
+
             rounded-xl
+
             border
+
             border-gray-200
+
             overflow-hidden
+
           "
+
         >
 
+
+
           <div
+
             class="
+
               ledger-table
+
               bg-gray-900
+
               text-white
+
               grid
+
               grid-cols-4
+
               p-3
+
               text-sm
+
               font-semibold
+
             "
+
           >
+
+
 
             <div>Date</div>
 
+
+
             <div>Details</div>
 
-            <div class="text-right">
-              Credit Received
-            </div>
+
 
             <div class="text-right">
-              Cash Paid
+
+              Credit Received
+
             </div>
+
+
+
+            <div class="text-right">
+
+              Cash Paid
+
+            </div>
+
+
 
           </div>
+
+
+
 
 
           <div
+
             id="summary"
+
             class="
+
               ledger-table
+
               bg-white
+
               divide-y
+
               divide-gray-100
+
             "
+
             aria-live="polite"
+
           >
 
+
+
             <div
+
               class="
+
                 p-6
+
                 text-center
+
                 text-gray-500
+
               "
+
             >
+
               Loading ledger…
+
             </div>
+
+
 
           </div>
 
+
+
         </div>
+
+
+
 
 
         <!-- ===============================================
+
              MOBILE TRANSACTION CARDS
+
              =============================================== -->
 
+
+
         <div
+
           id="mobileLedger"
+
           class="
+
             space-y-3
+
           "
+
           aria-live="polite"
+
         >
 
+
+
           <div
+
             class="
+
               p-6
+
               text-center
+
               text-gray-500
+
               bg-white
+
               border
+
               border-gray-200
+
               rounded-xl
+
             "
+
           >
+
             Loading ledger…
+
           </div>
+
+
 
         </div>
 
+
+
       </section>
 
+
+
     </section>
+
+
 
   </main>
 
 
+
+
+
   <!-- =====================================================
+
        FOOTER
+
        ===================================================== -->
 
+
+
   <footer
+
     class="
+
       max-w-4xl
+
       mx-auto
+
       mt-8
+
     "
+
   >
 
+
+
     <div
+
       class="
+
         bg-gradient-to-br
+
         from-gray-900
+
         to-black
+
         text-white
+
         rounded-2xl
+
         px-6
+
         py-6
+
         shadow-lg
+
         border
+
         border-white/10
+
       "
+
     >
 
+
+
       <div
+
         class="
+
           grid
+
           md:grid-cols-3
+
           gap-6
+
           items-center
+
         "
+
       >
+
+
 
         <!-- BRAND -->
 
+
+
         <div>
 
-          <div
-            class="
-              text-lg
-              font-semibold
-            "
-          >
-            RanSan Technology
-          </div>
+
 
           <div
+
             class="
-              text-xs
-              text-gray-400
-              mt-1
+
+              text-lg
+
+              font-semibold
+
             "
+
           >
-            Smart Ledger &amp; Business Solutions
+
+            RanSan Technology
+
           </div>
+
+
+
+          <div
+
+            class="
+
+              text-xs
+
+              text-gray-400
+
+              mt-1
+
+            "
+
+          >
+
+            Smart Ledger &amp; Business Solutions
+
+          </div>
+
+
 
         </div>
+
+
+
 
 
         <!-- CONTACT -->
 
+
+
         <div
+
           class="
+
             text-sm
+
             text-gray-300
+
             space-y-1
+
           "
+
         >
 
-          <div>
-            📞 +91 8148610567
-          </div>
+
 
           <div>
-            📧 ransangroups2025@gmail.com
+
+            📞 +91 8148610567
+
           </div>
+
+
+
+          <div>
+
+            📧 ransangroups2025@gmail.com
+
+          </div>
+
+
 
         </div>
+
+
+
 
 
         <!-- WEBSITE -->
 
+
+
         <div
+
           class="
+
             md:text-right
+
           "
+
         >
 
+
+
           <a
+
             href="https://www.ransangroups.com"
+
             target="_blank"
+
             rel="noopener noreferrer"
+
             class="
+
               inline-flex
+
               items-center
+
               gap-2
+
               bg-white/10
+
               hover:bg-white/20
+
               px-4
+
               py-2
+
               rounded-xl
+
               text-sm
+
               transition
+
             "
+
           >
+
             🌐 www.ransangroups.com
+
           </a>
+
+
 
         </div>
 
+
+
       </div>
+
+
+
 
 
       <div
+
         class="
+
           border-t
+
           border-white/10
+
           mt-6
+
           pt-4
+
           text-center
+
           text-xs
+
           text-gray-500
+
         "
+
       >
+
         © <span id="copyrightYear"></span>
+
         RanSan Groups. All rights reserved.
+
       </div>
 
+
+
     </div>
+
+
 
   </footer>
 
 
+
+
+
   <!-- =====================================================
+
        MOBILE STICKY FOOTER
+
        ===================================================== -->
 
+
+
   <div
+
     id="mobileFooter"
+
     class="
+
       fixed
+
       bottom-0
+
       left-0
+
       w-full
+
       md:hidden
+
       z-40
+
       transition-transform
+
       duration-300
+
       screen-only
+
     "
+
   >
 
+
+
     <div
+
       class="
+
         mx-3
+
         mb-3
+
         rounded-2xl
+
         bg-black/80
+
         backdrop-blur-xl
+
         border
+
         border-white/10
+
         shadow-lg
+
         px-4
+
         py-3
+
         flex
+
         items-center
+
         justify-between
+
         gap-3
+
       "
+
     >
 
+
+
       <div
+
         class="
+
           flex
+
           items-center
+
           gap-3
+
           min-w-0
+
         "
+
       >
 
+
+
         <span
+
           class="
+
             w-2
+
             h-2
+
             bg-green-400
+
             rounded-full
+
             shrink-0
+
           "
+
           aria-hidden="true"
+
         ></span>
 
 
+
+
+
         <div
+
           class="
+
             flex
+
             flex-col
+
             leading-tight
+
             min-w-0
+
           "
+
         >
 
+
+
           <span
+
             id="footerBusinessName"
+
             class="
+
               text-xs
+
               text-gray-400
+
               truncate
+
             "
+
           >
+
             Ledger
+
           </span>
+
+
+
 
 
           <span
+
             id="footerText"
+
             class="
+
               text-sm
+
               font-medium
+
               text-white
+
               truncate
+
             "
+
           >
+
             Loading…
+
           </span>
+
+
 
         </div>
 
+
+
       </div>
+
+
+
 
 
       <div
+
         class="
+
           flex
+
           items-center
+
           gap-2
+
           shrink-0
+
         "
+
       >
 
+
+
         <button
+
           id="footerPayBtn"
+
           type="button"
+
           class="
+
             hidden
+
             text-xs
+
             px-3
+
             py-2
+
             rounded-lg
+
             bg-green-600
+
             hover:bg-green-700
+
             text-white
+
             font-semibold
+
             transition
+
           "
+
         >
+
           Pay Now
+
         </button>
 
 
+
+
+
         <a
+
           href="https://www.ransangroups.com"
+
           target="_blank"
+
           rel="noopener noreferrer"
+
           aria-label="Open RanSan Groups website"
+
           class="
+
             text-xs
+
             bg-white/10
+
             hover:bg-white/20
+
             text-white
+
             px-3
+
             py-2
+
             rounded-lg
+
             transition
+
           "
+
         >
+
           🌐
+
         </a>
+
+
 
       </div>
 
+
+
     </div>
+
+
 
   </div>
 
 
+
+
+
   <!-- =====================================================
+
        PAYMENT DRAWER
+
        ===================================================== -->
 
+
+
   <div
+
     id="paymentDrawer"
+
     class="
+
       fixed
+
       bottom-0
+
       left-0
+
       w-full
+
       z-50
+
       transform
+
       translate-y-full
+
       transition-transform
+
       duration-300
+
       screen-only
+
     "
+
     role="dialog"
+
     aria-modal="true"
+
     aria-labelledby="drawerTitle"
+
   >
 
+
+
     <div
+
       class="
+
         bg-black
+
         text-white
+
         rounded-t-3xl
+
         p-5
+
         shadow-2xl
+
         max-h-[90vh]
+
         overflow-y-auto
+
       "
+
     >
 
+
+
       <div
+
         class="
+
           max-w-md
+
           mx-auto
+
         "
+
       >
 
+
+
         <div
+
           class="
+
             flex
+
             justify-between
+
             items-center
+
             mb-4
+
           "
+
         >
+
+
 
           <div>
 
+
+
             <h2
+
               id="drawerTitle"
+
               class="font-semibold"
+
             >
+
               Payment
+
             </h2>
 
+
+
             <div
+
               id="drawerPayee"
+
               class="
+
                 text-xs
+
                 text-gray-400
+
                 mt-1
+
               "
+
             ></div>
+
+
 
           </div>
 
 
+
+
+
           <button
+
             type="button"
+
             onclick="closeDrawer()"
+
             aria-label="Close payment panel"
+
             class="
+
               w-9
+
               h-9
+
               rounded-full
+
               bg-white/10
+
               hover:bg-white/20
+
               transition
+
             "
+
           >
+
             ✕
+
           </button>
+
+
 
         </div>
 
 
+
+
+
         <div
+
           id="drawerAmount"
+
           class="
+
             text-2xl
+
             font-bold
+
             mb-4
+
           "
+
         ></div>
 
 
+
+
+
         <a
+
           id="drawerPayBtn"
+
           href="#"
+
           class="
+
             block
+
             text-center
+
             bg-green-600
+
             hover:bg-green-700
+
             p-3
+
             rounded-xl
+
             mb-3
+
             font-semibold
+
             transition
+
           "
+
         >
+
           Pay via UPI
+
         </a>
 
 
+
+
+
         <button
+
           id="drawerQrBtn"
+
           type="button"
+
           onclick="toggleDrawerQR()"
+
           class="
+
             w-full
+
             bg-blue-600
+
             hover:bg-blue-700
+
             p-3
+
             rounded-xl
+
             font-semibold
+
             transition
+
           "
+
           aria-expanded="false"
+
           aria-controls="drawerQRArea"
+
         >
+
           Show QR Code
+
         </button>
 
 
+
+
+
         <div
+
           id="drawerQRArea"
+
           class="
+
             hidden
+
             bg-white
+
             rounded-2xl
+
             p-4
+
             mt-4
+
             text-center
+
           "
+
         >
 
+
+
           <div
+
             id="drawerQR"
+
             class="
+
               qr-container
+
               flex
+
               justify-center
+
             "
+
           ></div>
 
 
+
+
+
           <img
+
             id="drawerQRFallback"
+
             class="
+
               hidden
+
               w-48
+
               max-w-full
+
               mx-auto
+
               rounded-xl
+
             "
+
             alt="Business payment QR code"
+
           >
+
+
 
         </div>
 
+
+
       </div>
+
+
 
     </div>
 
+
+
   </div>
+
+
+
 
 
   <script>
 
-    // =====================================================
-    // API
+
+
     // =====================================================
 
+    // API
+
+    // =====================================================
+
+
+
     const API =
+
       "https://script.google.com/macros/s/AKfycbx5UFyYEx2SuYiLLGwOqmQehiDBYBL1r6I9hIB_05gSJIY6HUcSnusLUZkMSk9OLD1b/exec";
 
 
+
+
+
     const urlParams =
+
       new URLSearchParams(
+
         window.location.search
+
       );
 
 
+
+
+
     const customerId =
+
       urlParams.get("customer");
 
 
+
+
+
     const businessId =
+
       urlParams.get("bid");
 
 
+
+
+
     const env =
+
       urlParams.get("env") ||
+
       "test";
 
 
+
+
+
     // =====================================================
+
     // STATE
+
     // =====================================================
+
+
 
     let publicProfile = {
 
+
+
       business: {
+
         name: "Business",
+
         business_phone: "",
+
         upi_id: "",
+
         payee_name: "",
+
         qr_image: ""
+
       },
 
+
+
       customer: {
+
         name: "Customer"
+
       }
+
+
 
     };
 
 
+
+
+
     let isLoading =
+
       false;
+
+
+
 
 
     let currentUPILink =
+
       "";
 
 
+
+
+
     let mainQRCreated =
+
       false;
+
+
+
 
 
     let drawerQRCreated =
+
       false;
 
 
-    // =====================================================
-    // DATE / COPYRIGHT
+
+
+
     // =====================================================
 
+    // DATE / COPYRIGHT
+
+    // =====================================================
+
+
+
     const currentDate =
+
       new Date();
 
 
+
+
+
     const formattedToday =
+
       currentDate.toLocaleDateString(
+
         "en-IN",
+
         {
+
           day: "2-digit",
+
           month: "short",
+
           year: "numeric"
+
         }
+
       );
 
 
+
+
+
     document
+
       .getElementById("today")
+
       .textContent =
+
         formattedToday;
 
 
+
+
+
     document
+
       .getElementById("mobileToday")
+
       .textContent =
+
         formattedToday;
 
 
+
+
+
     document
+
       .getElementById("copyrightYear")
+
       .textContent =
+
         currentDate.getFullYear();
 
 
+
+
+
     // =====================================================
+
     // HELPERS
+
     // =====================================================
+
+
 
     function escapeHTML(value) {
 
+
+
       return String(
+
         value ?? ""
+
       )
+
         .replace(
+
           /&/g,
+
           "&amp;"
+
         )
+
         .replace(
+
           /</g,
+
           "&lt;"
+
         )
+
         .replace(
+
           />/g,
+
           "&gt;"
+
         )
+
         .replace(
+
           /"/g,
+
           "&quot;"
+
         )
+
         .replace(
+
           /'/g,
+
           "&#039;"
+
         );
 
+
+
     }
+
+
+
 
 
     function formatMoney(value) {
 
+
+
       const amount =
+
         Math.round(
+
           Number(value) || 0
+
         );
 
 
+
+
+
       return (
+
         "₹" +
+
         new Intl.NumberFormat(
+
           "en-IN",
+
           {
+
             maximumFractionDigits: 0
+
           }
+
         ).format(amount)
+
       );
 
+
+
     }
+
+
+
 
 
     function formatDate(value) {
 
+
+
       const date =
+
         new Date(value);
 
 
+
+
+
       if (
+
         Number.isNaN(
+
           date.getTime()
+
         )
+
       ) {
 
+
+
         return "-";
+
+
 
       }
 
 
+
+
+
       return date.toLocaleDateString(
+
         "en-IN",
+
         {
+
           day: "2-digit",
+
           month: "short",
+
           year: "numeric"
+
         }
+
       );
 
+
+
     }
+
+
+
 
 
     function setLoadingState() {
 
+
+
       document
+
         .getElementById("summary")
-        .innerHTML = `
+
+        .innerHTML = \`
+
+
 
           <div
+
             class="
+
               p-8
+
               text-center
+
               text-gray-500
+
             "
+
           >
+
             Loading ledger…
+
           </div>
 
-        `;
+
+
+        \`;
+
+
+
 
 
       document
+
         .getElementById("mobileLedger")
-        .innerHTML = `
+
+        .innerHTML = \`
+
+
 
           <div
+
             class="
+
               bg-white
+
               border
+
               border-gray-200
+
               rounded-xl
+
               p-4
+
               space-y-3
+
             "
+
           >
 
+
+
             <div
+
               class="
+
                 skeleton
+
                 h-4
+
                 w-24
+
                 rounded
+
               "
+
             ></div>
 
+
+
             <div
+
               class="
+
                 skeleton
+
                 h-5
+
                 w-40
+
                 rounded
+
               "
+
             ></div>
 
+
+
             <div
+
               class="
+
                 skeleton
+
                 h-4
+
                 w-28
+
                 rounded
+
               "
+
             ></div>
+
+
 
           </div>
 
-        `;
+
+
+        \`;
+
+
 
     }
+
+
+
 
 
     function showLedgerError(message) {
 
+
+
       const safeMessage =
+
         escapeHTML(message);
 
 
-      const errorHTML = `
+
+
+
+      const errorHTML = \`
+
+
 
         <div
+
           class="
+
             p-7
+
             text-center
+
           "
+
         >
 
+
+
           <div
+
             class="
+
               text-red-600
+
               font-semibold
+
             "
+
           >
+
             Unable to load ledger
+
           </div>
+
+
+
 
 
           <div
+
             class="
+
               text-sm
+
               text-gray-500
+
               mt-2
+
             "
+
           >
+
             ${safeMessage}
+
           </div>
+
+
+
 
 
           <button
+
             type="button"
+
             onclick="loadSummary(true)"
+
             class="
+
               mt-4
+
               bg-blue-600
+
               hover:bg-blue-700
+
               text-white
+
               px-4
+
               py-2
+
               rounded-lg
+
               text-sm
+
               font-semibold
+
             "
+
           >
+
             Retry
+
           </button>
+
+
 
         </div>
 
-      `;
+
+
+      \`;
+
+
+
 
 
       document
+
         .getElementById("summary")
+
         .innerHTML =
+
           errorHTML;
+
+
+
 
 
       document
+
         .getElementById("mobileLedger")
+
         .innerHTML =
+
           errorHTML;
+
+
 
     }
 
 
+
+
+
     // =====================================================
+
     // FETCH WITH TIMEOUT
+
     // =====================================================
+
+
 
     async function fetchJSON(
+
       params,
+
       timeoutMs = 15000
+
     ) {
 
+
+
       const controller =
+
         new AbortController();
 
 
+
+
+
       const timeout =
+
         setTimeout(
+
           () =>
+
             controller.abort(),
+
           timeoutMs
+
         );
+
+
+
 
 
       try {
 
+
+
         const query =
+
           new URLSearchParams(
+
             params
+
           );
+
+
+
 
 
         const response =
+
           await fetch(
-            `${API}?${query.toString()}`,
+
+            \`${API}?${query.toString()}\`,
+
             {
+
               signal:
+
                 controller.signal,
 
+
+
               headers: {
+
                 Accept:
+
                   "application/json"
+
               },
 
+
+
               cache:
+
                 "no-store"
+
             }
+
           );
+
+
+
 
 
         if (!response.ok) {
 
+
+
           throw new Error(
-            `Server error (${response.status})`
+
+            \`Server error (${response.status})\`
+
           );
 
+
+
         }
+
+
+
 
 
         return await response.json();
 
+
+
       }
+
+
 
       finally {
 
+
+
         clearTimeout(
+
           timeout
+
         );
 
+
+
       }
+
+
 
     }
 
 
+
+
+
     // =====================================================
+
     // LOAD PUBLIC BUSINESS / CUSTOMER PROFILE
+
     // =====================================================
+
+
 
     async function loadPublicProfile() {
 
+
+
       try {
 
+
+
         const data =
+
           await fetchJSON(
+
             {
+
               action:
+
                 "getPublicLedgerProfile",
 
+
+
               bid:
+
                 businessId,
 
+
+
               cid:
+
                 customerId,
 
+
+
               env:
+
                 env
+
             },
+
             12000
+
           );
 
 
+
+
+
         if (
+
           !data ||
+
           data.success !== true
+
         ) {
+
+
 
           return;
 
+
+
         }
+
+
+
 
 
         if (data.business) {
 
+
+
           publicProfile.business = {
+
             ...publicProfile.business,
+
             ...data.business
+
           };
 
+
+
         }
+
+
+
 
 
         if (data.customer) {
 
+
+
           publicProfile.customer = {
+
             ...publicProfile.customer,
+
             ...data.customer
+
           };
+
+
 
         }
 
 
+
+
+
         updateProfileUI();
 
+
+
       }
+
+
 
       catch (error) {
 
+
+
         /*
+
          * Profile information is useful but is not allowed
+
          * to prevent transaction history from loading.
+
          */
 
+
+
         console.warn(
+
           "Unable to load public ledger profile:",
+
           error
+
         );
+
+
 
       }
 
+
+
     }
+
+
+
 
 
     function updateProfileUI() {
 
+
+
       const business =
+
         publicProfile.business;
 
 
+
+
+
       const customer =
+
         publicProfile.customer;
 
 
+
+
+
       const businessName =
+
         business.name ||
+
         "Business";
 
 
+
+
+
       const customerName =
+
         customer.name ||
+
         "Customer";
 
 
+
+
+
       document
+
         .getElementById("businessName")
+
         .textContent =
+
           businessName;
 
 
+
+
+
       document
+
         .getElementById("customerIdentity")
+
         .textContent =
-          `${customerName} · Customer Ledger`;
+
+          \`${customerName} · Customer Ledger\`;
+
+
+
 
 
       document
+
         .getElementById("statementCustomerName")
+
         .textContent =
+
           customerName;
 
 
+
+
+
       document
+
         .getElementById("footerBusinessName")
+
         .textContent =
+
           businessName;
 
 
+
+
+
       document
+
         .getElementById("paymentBusinessName")
+
         .textContent =
+
           business.payee_name ||
+
           businessName;
+
+
+
 
 
       document
+
         .getElementById("drawerPayee")
+
         .textContent =
+
           business.payee_name ||
+
           businessName;
+
+
+
 
 
       document.title =
-        `${customerName} - ${businessName} Ledger`;
+
+        \`${customerName} - ${businessName} Ledger\`;
+
+
 
     }
 
 
+
+
+
     // =====================================================
+
     // LOAD LEDGER
+
     // =====================================================
+
+
 
     async function loadSummary(force = false) {
 
+
+
       if (
+
         isLoading &&
+
         !force
+
       ) {
 
+
+
         return;
+
+
 
       }
 
 
+
+
+
       if (
+
         !customerId ||
+
         !businessId
+
       ) {
+
+
 
         showLedgerError(
+
           "This ledger link is incomplete."
+
         );
+
+
 
         return;
 
+
+
       }
+
+
+
 
 
       isLoading =
+
         true;
+
+
+
 
 
       const refreshBtn =
+
         document.getElementById(
+
           "refreshBtn"
+
         );
 
 
+
+
+
       refreshBtn.disabled =
+
         true;
 
 
+
+
+
       refreshBtn.textContent =
+
         "Loading…";
+
+
+
 
 
       setLoadingState();
 
 
+
+
+
       /*
+
        * Profile and transactions are independent,
+
        * therefore start both together.
+
        */
 
+
+
       const profilePromise =
+
         loadPublicProfile();
+
+
+
 
 
       try {
 
+
+
         const data =
+
           await fetchJSON(
+
             {
+
               action:
+
                 "getCustomerTransactions",
 
+
+
               bid:
+
                 businessId,
 
+
+
               cid:
+
                 customerId,
 
+
+
               env:
+
                 env
+
             },
+
             15000
+
           );
+
+
+
 
 
         if (
+
           !data ||
+
           !Array.isArray(
+
             data.transactions
+
           )
+
         ) {
 
+
+
           throw new Error(
+
             "Invalid server response"
+
           );
+
+
 
         }
 
 
+
+
+
         /*
+
          * Allow profile request to finish,
+
          * but profile failure does not fail ledger.
+
          */
+
+
 
         await profilePromise;
 
 
+
+
+
         renderLedger(
+
           data.transactions
+
         );
+
+
 
       }
 
+
+
       catch (error) {
+
+
 
         let message;
 
 
+
+
+
         if (
+
           error.name ===
+
           "AbortError"
+
         ) {
 
+
+
           message =
+
             "The server is taking longer than expected. Please try again.";
 
+
+
         }
+
+
 
         else if (
+
           !navigator.onLine
+
         ) {
 
+
+
           message =
+
             "You appear to be offline. Check your internet connection and try again.";
 
+
+
         }
+
+
 
         else {
 
+
+
           message =
+
             "We could not load this ledger. Please try again.";
 
+
+
         }
+
+
+
 
 
         showLedgerError(
+
           message
+
         );
 
+
+
       }
+
+
 
       finally {
 
+
+
         isLoading =
+
           false;
+
+
+
 
 
         refreshBtn.disabled =
+
           false;
 
 
+
+
+
         refreshBtn.textContent =
+
           "Refresh";
 
+
+
       }
+
+
 
     }
 
 
+
+
+
     // =====================================================
+
     // RENDER LEDGER
+
     // =====================================================
+
+
 
     function renderLedger(
+
       transactions
+
     ) {
 
+
+
       let received =
+
         0;
+
+
+
 
 
       let paid =
+
         0;
 
 
+
+
+
       transactions.forEach(
+
         transaction => {
 
+
+
           const amount =
+
             Number(
+
               transaction.amount
+
             ) || 0;
 
 
+
+
+
           if (
+
             transaction.type ===
+
             "gave"
+
           ) {
+
+
 
             received +=
+
               amount;
 
+
+
           }
+
+
 
           else if (
+
             transaction.type ===
+
             "got"
+
           ) {
 
+
+
             paid +=
+
               amount;
+
+
 
           }
 
+
+
         }
+
       );
+
+
+
 
 
       renderCards(
+
         received,
+
         paid
+
       );
+
+
+
 
 
       setupPayment(
+
         received,
+
         paid
+
       );
+
+
+
 
 
       renderDesktopTransactions(
+
         transactions
+
       );
+
+
+
 
 
       renderMobileTransactions(
+
         transactions
+
       );
+
+
+
 
 
       updateMobileFooter(
+
         received,
+
         paid
+
       );
+
+
 
     }
 
-
-    // =====================================================
-    // SUMMARY CARDS
-    //
-    // IMPORTANT:
-    // Accounting logic intentionally preserved.
-    //
-    // Credit Received = gave
-    // Cash Paid       = got
-    //
-    // net = paid - received
-    //
-    // negative = customer needs to pay
-    // positive = customer will get
-    // =====================================================
-
-    function renderCards(
-      received,
-      paid
-    ) {
-
-      const net =
-        paid -
-        received;
-
-
-      const isYouWillGet =
-        net > 0;
-
-
-      const isSettled =
-        net === 0;
-
-
-      let amountColor;
-      let arrow;
-      let badge;
-
-
-      if (isSettled) {
-
-        amountColor =
-          "text-gray-200";
-
-
-        arrow =
-          `<span class="text-gray-300 text-lg">●</span>`;
-
-
-        badge =
-          `
-            <span
-              class="
-                bg-white/10
-                text-gray-200
-                px-3
-                py-1
-                rounded-full
-                text-xs
-              "
-            >
-              Settled
-            </span>
-          `;
-
-      }
-
-      else if (isYouWillGet) {
-
-        amountColor =
-          "text-green-400";
-
-
-        arrow =
-          `<span class="text-green-400 text-lg">↑</span>`;
-
-
-        badge =
-          `
-            <span
-              class="
-                bg-green-500/20
-                text-green-300
-                px-3
-                py-1
-                rounded-full
-                text-xs
-              "
-            >
-              You Will Get
-            </span>
-          `;
-
-      }
-
-      else {
-
-        amountColor =
-          "text-red-400";
-
-
-        arrow =
-          `<span class="text-red-400 text-lg">↓</span>`;
-
-
-        badge =
-          `
-            <span
-              class="
-                bg-red-500/20
-                text-red-300
-                px-3
-                py-1
-                rounded-full
-                text-xs
-              "
-            >
-              You Need to Pay
-            </span>
-          `;
-
-      }
-
-
-      const glass = `
-        relative
-        overflow-hidden
-        bg-black/80
-        backdrop-blur-xl
-        border
-        border-white/10
-        rounded-2xl
-        p-4
-        shadow-lg
-      `;
-
-
-      document
-        .getElementById(
-          "summaryCards"
-        )
-        .innerHTML = `
-
-          <!-- CREDIT RECEIVED -->
-
-          <div class="${glass}">
-
-            <div
-              class="
-                absolute
-                inset-0
-                bg-gradient-to-br
-                from-white/10
-                to-transparent
-                opacity-20
-              "
-            ></div>
-
-            <div
-              class="
-                relative
-                z-10
-              "
-            >
-
-              <div
-                class="
-                  text-xs
-                  text-gray-300
-                "
-              >
-                Credit Received
-              </div>
-
-              <div
-                class="
-                  text-xl
-                  font-bold
-                  text-red-400
-                  mt-1
-                "
-              >
-                ${formatMoney(received)}
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <!-- CASH PAID -->
-
-          <div class="${glass}">
-
-            <div
-              class="
-                absolute
-                inset-0
-                bg-gradient-to-br
-                from-white/10
-                to-transparent
-                opacity-20
-              "
-            ></div>
-
-            <div
-              class="
-                relative
-                z-10
-              "
-            >
-
-              <div
-                class="
-                  text-xs
-                  text-gray-300
-                "
-              >
-                Cash Paid
-              </div>
-
-              <div
-                class="
-                  text-xl
-                  font-bold
-                  text-green-400
-                  mt-1
-                "
-              >
-                ${formatMoney(paid)}
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <!-- NET BALANCE -->
-
-          <div class="${glass}">
-
-            <div
-              class="
-                absolute
-                inset-0
-                bg-gradient-to-br
-                from-white/10
-                to-transparent
-                opacity-20
-              "
-            ></div>
-
-            <div
-              class="
-                relative
-                z-10
-                text-center
-              "
-            >
-
-              <div
-                class="
-                  text-xs
-                  text-gray-300
-                "
-              >
-                Net Balance
-              </div>
-
-
-              <div
-                class="
-                  flex
-                  justify-center
-                  items-center
-                  gap-2
-                  mt-1
-                "
-              >
-
-                ${arrow}
-
-                <div
-                  class="
-                    text-xl
-                    font-bold
-                    ${amountColor}
-                  "
-                >
-                  ${formatMoney(
-                    Math.abs(net)
-                  )}
-                </div>
-
-              </div>
-
-
-              <div class="mt-2">
-                ${badge}
-              </div>
-
-            </div>
-
-          </div>
-
-        `;
-
-    }
-
-
-    // =====================================================
-    // DESKTOP TRANSACTIONS
-    // =====================================================
-
-    function renderDesktopTransactions(
-      transactions
-    ) {
-
-      const summary =
-        document.getElementById(
-          "summary"
-        );
-
-
-      if (
-        transactions.length === 0
-      ) {
-
-        summary.innerHTML = `
-
-          <div
-            class="
-              p-8
-              text-center
-              text-gray-500
-            "
-          >
-            No transactions yet.
-          </div>
-
-        `;
-
-        return;
-
-      }
-
-
-      const reversed =
-        [...transactions]
-          .reverse();
-
-
-      summary.innerHTML =
-        reversed
-          .map(
-            transaction => {
-
-              const isCredit =
-                transaction.type ===
-                "gave";
-
-
-              const isPaid =
-                transaction.type ===
-                "got";
-
-
-              return `
-
-                <div
-                  class="
-                    grid
-                    grid-cols-4
-                    p-3
-                    text-sm
-                    items-center
-                    hover:bg-gray-50
-                    transition
-                  "
-                >
-
-                  <div
-                    class="
-                      text-gray-600
-                    "
-                  >
-                    ${formatDate(
-                      transaction.date
-                    )}
-                  </div>
-
-
-                  <div
-                    class="
-                      text-gray-800
-                      pr-3
-                      break-words
-                    "
-                  >
-                    ${
-                      escapeHTML(
-                        transaction.note ||
-                        "-"
-                      )
-                    }
-                  </div>
-
-
-                  <div
-                    class="
-                      text-right
-                      text-red-600
-                      font-semibold
-                    "
-                  >
-                    ${
-                      isCredit
-                        ? formatMoney(
-                            transaction.amount
-                          )
-                        : ""
-                    }
-                  </div>
-
-
-                  <div
-                    class="
-                      text-right
-                      text-green-600
-                      font-semibold
-                    "
-                  >
-                    ${
-                      isPaid
-                        ? formatMoney(
-                            transaction.amount
-                          )
-                        : ""
-                    }
-                  </div>
-
-                </div>
-
-              `;
-
-            }
-          )
-          .join("");
-
-    }
-
-
-    // =====================================================
-    // MOBILE TRANSACTIONS
-    // =====================================================
-
-    function renderMobileTransactions(
-      transactions
-    ) {
-
-      const container =
-        document.getElementById(
-          "mobileLedger"
-        );
-
-
-      if (
-        transactions.length === 0
-      ) {
-
-        container.innerHTML = `
-
-          <div
-            class="
-              bg-white
-              border
-              border-gray-200
-              rounded-xl
-              p-8
-              text-center
-              text-gray-500
-            "
-          >
-            No transactions yet.
-          </div>
-
-        `;
-
-        return;
-
-      }
-
-
-      const reversed =
-        [...transactions]
-          .reverse();
-
-
-      container.innerHTML =
-        reversed
-          .map(
-            transaction => {
-
-              const isCredit =
-                transaction.type ===
-                "gave";
-
-
-              const amountClass =
-                isCredit
-                  ? "text-red-600"
-                  : "text-green-600";
-
-
-              const label =
-                isCredit
-                  ? "Credit Received"
-                  : "Cash Paid";
-
-
-              const badgeClass =
-                isCredit
-                  ? "bg-red-50 text-red-600"
-                  : "bg-green-50 text-green-700";
-
-
-              return `
-
-                <article
-                  class="
-                    bg-white
-                    border
-                    border-gray-200
-                    rounded-2xl
-                    p-4
-                    shadow-sm
-                  "
-                >
-
-                  <div
-                    class="
-                      flex
-                      items-start
-                      justify-between
-                      gap-4
-                    "
-                  >
-
-                    <div
-                      class="
-                        min-w-0
-                      "
-                    >
-
-                      <div
-                        class="
-                          text-xs
-                          text-gray-400
-                        "
-                      >
-                        ${formatDate(
-                          transaction.date
-                        )}
-                      </div>
-
-
-                      <div
-                        class="
-                          text-sm
-                          font-medium
-                          text-gray-800
-                          mt-1
-                          break-words
-                        "
-                      >
-                        ${
-                          escapeHTML(
-                            transaction.note ||
-                            "-"
-                          )
-                        }
-                      </div>
-
-                    </div>
-
-
-                    <div
-                      class="
-                        text-right
-                        shrink-0
-                      "
-                    >
-
-                      <div
-                        class="
-                          text-base
-                          font-bold
-                          ${amountClass}
-                        "
-                      >
-                        ${formatMoney(
-                          transaction.amount
-                        )}
-                      </div>
-
-
-                      <div
-                        class="
-                          inline-block
-                          mt-1
-                          text-[11px]
-                          px-2
-                          py-1
-                          rounded-full
-                          ${badgeClass}
-                        "
-                      >
-                        ${label}
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </article>
-
-              `;
-
-            }
-          )
-          .join("");
-
-    }
-
-
-    // =====================================================
-    // PAYMENT
-    // =====================================================
-
-    function setupPayment(
-      received,
-      paid
-    ) {
-
-      const net =
-        paid -
-        received;
-
-
-      const payBox =
-        document.getElementById(
-          "payBox"
-        );
-
-
-      const upiBtn =
-        document.getElementById(
-          "upiBtn"
-        );
-
-
-      const qrBtn =
-        document.getElementById(
-          "qrBtn"
-        );
-
-
-      const qrArea =
-        document.getElementById(
-          "qrArea"
-        );
-
-
-      // RESET
-
-      payBox.classList.add(
-        "hidden"
-      );
-
-
-      upiBtn.classList.add(
-        "hidden"
-      );
-
-
-      qrBtn.classList.add(
-        "hidden"
-      );
-
-
-      qrArea.classList.add(
-        "hidden"
-      );
-
-
-      qrBtn.setAttribute(
-        "aria-expanded",
-        "false"
-      );
-
-
-      qrBtn.textContent =
-        "Show QR Code";
-
-
-      mainQRCreated =
-        false;
-
-
-      document
-        .getElementById("qrCode")
-        .innerHTML =
-          "";
-
-
-      const business =
-        publicProfile.business;
-
-
-      /*
-       * Existing logic preserved:
-       *
-       * net < 0
-       * customer needs to pay.
-       */
-
-      if (
-        net >= 0
-      ) {
-
-        return;
-
-      }
-
+    function renderOutstandingBalance(net) {
 
       const amount =
         Math.abs(net);
 
 
-      const upi =
-        String(
-          business.upi_id ||
-          ""
-        ).trim();
+      const amountEl =
+        document.getElementById(
+          "balanceHeroAmount"
+        );
 
 
-      const payeeName =
-        String(
-          business.payee_name ||
-          business.name ||
-          "Business"
-        ).trim();
+      const statusEl =
+        document.getElementById(
+          "balanceHeroStatus"
+        );
 
 
-      /*
-       * If business has no UPI ID,
-       * do not show a broken Pay button.
-       */
+      const hintEl =
+        document.getElementById(
+          "balanceHeroHint"
+        );
 
-      if (!upi) {
 
-        return;
+      amountEl.textContent =
+        formatMoney(amount);
+
+
+      amountEl.className =
+        "text-3xl sm:text-4xl font-extrabold tracking-tight";
+
+
+      statusEl.className =
+        "mt-2 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold";
+
+
+      if (net < 0) {
+
+        amountEl.classList.add(
+          "text-red-300"
+        );
+
+
+        statusEl.classList.add(
+          "bg-red-500/20",
+          "text-red-200"
+        );
+
+
+        statusEl.textContent =
+          "You Need to Pay";
+
+
+        hintEl.textContent =
+          "Amount currently payable";
 
       }
 
 
-      currentUPILink =
-        buildUPILink(
-          upi,
-          payeeName,
-          amount
+      else if (net > 0) {
+
+        amountEl.classList.add(
+          "text-green-300"
         );
 
 
+        statusEl.classList.add(
+          "bg-green-500/20",
+          "text-green-200"
+        );
+
+
+        statusEl.textContent =
+          "You Will Get";
+
+
+        hintEl.textContent =
+          "Amount receivable by you";
+
+      }
+
+
+      else {
+
+        amountEl.classList.add(
+          "text-white"
+        );
+
+
+        statusEl.classList.add(
+          "bg-white/10",
+          "text-slate-200"
+        );
+
+
+        statusEl.textContent =
+          "Settled";
+
+
+        hintEl.textContent =
+          "No outstanding balance";
+
+      }
+
+    }
+
+
+
+
+
+
+
+
+    // =====================================================
+
+    // SUMMARY CARDS
+
+    //
+
+    // IMPORTANT:
+
+    // Accounting logic intentionally preserved.
+
+    //
+
+    // Credit Received = gave
+
+    // Cash Paid       = got
+
+    //
+
+    // net = paid - received
+
+    //
+
+    // negative = customer needs to pay
+
+    // positive = customer will get
+
+    // =====================================================
+
+
+
+    function renderCards(
+
+      received,
+
+      paid
+
+    ) {
+
+
+
+      const net =
+
+        paid -
+
+        received;
+
+
+      renderOutstandingBalance(net);
+
+
+
+
+
+      const isYouWillGet =
+
+        net > 0;
+
+
+
+
+
+      const isSettled =
+
+        net === 0;
+
+
+
+
+
+      let amountColor;
+
+      let arrow;
+
+      let badge;
+
+
+
+
+
+      if (isSettled) {
+
+
+
+        amountColor =
+
+          "text-gray-200";
+
+
+
+
+
+        arrow =
+
+          \`<span class="text-gray-300 text-lg">●</span>\`;
+
+
+
+
+
+        badge =
+
+          \`
+
+            <span
+
+              class="
+
+                bg-white/10
+
+                text-gray-200
+
+                px-3
+
+                py-1
+
+                rounded-full
+
+                text-xs
+
+              "
+
+            >
+
+              Settled
+
+            </span>
+
+          \`;
+
+
+
+      }
+
+
+
+      else if (isYouWillGet) {
+
+
+
+        amountColor =
+
+          "text-green-400";
+
+
+
+
+
+        arrow =
+
+          \`<span class="text-green-400 text-lg">↑</span>\`;
+
+
+
+
+
+        badge =
+
+          \`
+
+            <span
+
+              class="
+
+                bg-green-500/20
+
+                text-green-300
+
+                px-3
+
+                py-1
+
+                rounded-full
+
+                text-xs
+
+              "
+
+            >
+
+              You Will Get
+
+            </span>
+
+          \`;
+
+
+
+      }
+
+
+
+      else {
+
+
+
+        amountColor =
+
+          "text-red-400";
+
+
+
+
+
+        arrow =
+
+          \`<span class="text-red-400 text-lg">↓</span>\`;
+
+
+
+
+
+        badge =
+
+          \`
+
+            <span
+
+              class="
+
+                bg-red-500/20
+
+                text-red-300
+
+                px-3
+
+                py-1
+
+                rounded-full
+
+                text-xs
+
+              "
+
+            >
+
+              You Need to Pay
+
+            </span>
+
+          \`;
+
+
+
+      }
+
+
+
+
+
+      const glass = \`
+
+        relative
+
+        overflow-hidden
+
+        bg-black/80
+
+        backdrop-blur-xl
+
+        border
+
+        border-white/10
+
+        rounded-2xl
+
+        p-4
+
+        shadow-lg
+
+      \`;
+
+
+
+
+
       document
+
         .getElementById(
-          "paymentAmount"
+
+          "summaryCards"
+
         )
-        .textContent =
-          formatMoney(amount);
+
+        .innerHTML = \`
 
 
-      document
-        .getElementById(
-          "qrPayee"
-        )
-        .textContent =
-          payeeName;
+
+          <!-- CREDIT RECEIVED -->
 
 
-      payBox.classList.remove(
+
+          <div class="${glass}">
+
+
+
+            <div
+
+              class="
+
+                absolute
+
+                inset-0
+
+                bg-gradient-to-br
+
+                from-white/10
+
+                to-transparent
+
+                opacity-20
+
+              "
+
+            ></div>
+
+
+
+            <div
+
+              class="
+
+                relative
+
+                z-10
+
+              "
+
+            >
+
+
+
+              <div
+
+                class="
+
+                  text-xs
+
+                  text-gray-300
+
+                "
+
+              >
+
+                Credit Received
+
+              </div>
+
+
+
+              <div
+
+                class="
+
+                  text-xl
+
+                  font-bold
+
+                  text-red-400
+
+                  mt-1
+
+                "
+
+              >
+
+                ${formatMoney(received)}
+
+              </div>
+
+
+
+            </div>
+
+
+
+          </div>
+
+
+
+
+
+          <!-- CASH PAID -->
+
+
+
+          <div class="${glass}">
+
+
+
+            <div
+
+              class="
+
+                absolute
+
+                inset-0
+
+                bg-gradient-to-br
+
+                from-white/10
+
+                to-transparent
+
+                opacity-20
+
+              "
+
+            ></div>
+
+
+
+            <div
+
+              class="
+
+                relative
+
+                z-10
+
+              "
+
+            >
+
+
+
+              <div
+
+                class="
+
+                  text-xs
+
+                  text-gray-300
+
+                "
+
+              >
+
+                Cash Paid
+
+              </div>
+
+
+
+              <div
+
+                class="
+
+                  text-xl
+
+                  font-bold
+
+                  text-green-400
+
+                  mt-1
+
+                "
+
+              >
+
+                ${formatMoney(paid)}
+
+              </div>
+
+
+
+            </div>
+
+
+
+          </div>
+
+
+
+
+
+          <!-- NET BALANCE -->
+
+
+
+          <div class="${glass}">
+
+
+
+            <div
+
+              class="
+
+                absolute
+
+                inset-0
+
+                bg-gradient-to-br
+
+                from-white/10
+
+                to-transparent
+
+                opacity-20
+
+              "
+
+            ></div>
+
+
+
+            <div
+
+              class="
+
+                relative
+
+                z-10
+
+                text-center
+
+              "
+
+            >
+
+
+
+              <div
+
+                class="
+
+                  text-xs
+
+                  text-gray-300
+
+                "
+
+              >
+
+                Net Balance
+
+              </div>
+
+
+
+
+
+              <div
+
+                class="
+
+                  flex
+
+                  justify-center
+
+                  items-center
+
+                  gap-2
+
+                  mt-1
+
+                "
+
+              >
+
+
+
+                ${arrow}
+
+
+
+                <div
+
+                  class="
+
+                    text-xl
+
+                    font-bold
+
+                    ${amountColor}
+
+                  "
+
+                >
+
+                  ${formatMoney(
+
+                    Math.abs(net)
+
+                  )}
+
+                </div>
+
+
+
+              </div>
+
+
+
+
+
+              <div class="mt-2">
+
+                ${badge}
+
+              </div>
+
+
+
+            </div>
+
+
+
+          </div>
+
+
+
+        \`;
+
+
+
+    }
+
+
+
+
+
+    // =====================================================
+
+    // DESKTOP TRANSACTIONS
+
+    // =====================================================
+
+
+
+    function renderDesktopTransactions(
+
+      transactions
+
+    ) {
+
+
+
+      const summary =
+
+        document.getElementById(
+
+          "summary"
+
+        );
+
+
+
+
+
+      if (
+
+        transactions.length === 0
+
+      ) {
+
+
+
+        summary.innerHTML = \`
+
+
+
+          <div
+
+            class="
+
+              p-8
+
+              text-center
+
+              text-gray-500
+
+            "
+
+          >
+
+            No transactions yet.
+
+          </div>
+
+
+
+        \`;
+
+
+
+        return;
+
+
+
+      }
+
+
+
+
+
+      const reversed =
+
+        [...transactions]
+
+          .reverse();
+
+
+
+
+
+      summary.innerHTML =
+
+        reversed
+
+          .map(
+
+            transaction => {
+
+
+
+              const isCredit =
+
+                transaction.type ===
+
+                "gave";
+
+
+
+
+
+              const isPaid =
+
+                transaction.type ===
+
+                "got";
+
+
+
+
+
+              return \`
+
+
+
+                <div
+
+                  class="
+
+                    grid
+
+                    grid-cols-4
+
+                    p-3
+
+                    text-sm
+
+                    items-center
+
+                    hover:bg-gray-50
+
+                    transition
+
+                  "
+
+                >
+
+
+
+                  <div
+
+                    class="
+
+                      text-gray-600
+
+                    "
+
+                  >
+
+                    ${formatDate(
+
+                      transaction.date
+
+                    )}
+
+                  </div>
+
+
+
+
+
+                  <div
+
+                    class="
+
+                      text-gray-800
+
+                      pr-3
+
+                      break-words
+
+                    "
+
+                  >
+
+                    ${
+
+                      escapeHTML(
+
+                        transaction.note ||
+
+                        "-"
+
+                      )
+
+                    }
+
+                  </div>
+
+
+
+
+
+                  <div
+
+                    class="
+
+                      text-right
+
+                      text-red-600
+
+                      font-semibold
+
+                    "
+
+                  >
+
+                    ${
+
+                      isCredit
+
+                        ? formatMoney(
+
+                            transaction.amount
+
+                          )
+
+                        : ""
+
+                    }
+
+                  </div>
+
+
+
+
+
+                  <div
+
+                    class="
+
+                      text-right
+
+                      text-green-600
+
+                      font-semibold
+
+                    "
+
+                  >
+
+                    ${
+
+                      isPaid
+
+                        ? formatMoney(
+
+                            transaction.amount
+
+                          )
+
+                        : ""
+
+                    }
+
+                  </div>
+
+
+
+                </div>
+
+
+
+              \`;
+
+
+
+            }
+
+          )
+
+          .join("");
+
+
+
+    }
+
+
+
+
+
+    // =====================================================
+
+    // MOBILE TRANSACTIONS
+
+    // =====================================================
+
+
+
+    function renderMobileTransactions(
+
+      transactions
+
+    ) {
+
+
+
+      const container =
+
+        document.getElementById(
+
+          "mobileLedger"
+
+        );
+
+
+
+
+
+      if (
+
+        transactions.length === 0
+
+      ) {
+
+
+
+        container.innerHTML = \`
+
+
+
+          <div
+
+            class="
+
+              bg-white
+
+              border
+
+              border-gray-200
+
+              rounded-xl
+
+              p-8
+
+              text-center
+
+              text-gray-500
+
+            "
+
+          >
+
+            No transactions yet.
+
+          </div>
+
+
+
+        \`;
+
+
+
+        return;
+
+
+
+      }
+
+
+
+
+
+      const reversed =
+
+        [...transactions]
+
+          .reverse();
+
+
+
+
+
+      container.innerHTML =
+
+        reversed
+
+          .map(
+
+            transaction => {
+
+
+
+              const isCredit =
+
+                transaction.type ===
+
+                "gave";
+
+
+
+
+
+              const amountClass =
+
+                isCredit
+
+                  ? "text-red-600"
+
+                  : "text-green-600";
+
+
+
+
+
+              const label =
+
+                isCredit
+
+                  ? "Credit Received"
+
+                  : "Cash Paid";
+
+
+
+
+
+              const badgeClass =
+
+                isCredit
+
+                  ? "bg-red-50 text-red-600"
+
+                  : "bg-green-50 text-green-700";
+
+
+
+
+
+              return \`
+
+
+
+                <article
+
+                  class="
+
+                    bg-white
+
+                    border
+
+                    border-gray-200
+
+                    rounded-2xl
+
+                    p-4
+
+                    shadow-sm
+
+                  "
+
+                >
+
+
+
+                  <div
+
+                    class="
+
+                      flex
+
+                      items-start
+
+                      justify-between
+
+                      gap-4
+
+                    "
+
+                  >
+
+
+
+                    <div
+
+                      class="
+
+                        min-w-0
+
+                      "
+
+                    >
+
+
+
+                      <div
+
+                        class="
+
+                          text-xs
+
+                          text-gray-400
+
+                        "
+
+                      >
+
+                        ${formatDate(
+
+                          transaction.date
+
+                        )}
+
+                      </div>
+
+
+
+
+
+                      <div
+
+                        class="
+
+                          text-sm
+
+                          font-medium
+
+                          text-gray-800
+
+                          mt-1
+
+                          break-words
+
+                        "
+
+                      >
+
+                        ${
+
+                          escapeHTML(
+
+                            transaction.note ||
+
+                            "-"
+
+                          )
+
+                        }
+
+                      </div>
+
+
+
+                    </div>
+
+
+
+
+
+                    <div
+
+                      class="
+
+                        text-right
+
+                        shrink-0
+
+                      "
+
+                    >
+
+
+
+                      <div
+
+                        class="
+
+                          text-base
+
+                          font-bold
+
+                          ${amountClass}
+
+                        "
+
+                      >
+
+                        ${formatMoney(
+
+                          transaction.amount
+
+                        )}
+
+                      </div>
+
+
+
+
+
+                      <div
+
+                        class="
+
+                          inline-block
+
+                          mt-1
+
+                          text-[11px]
+
+                          px-2
+
+                          py-1
+
+                          rounded-full
+
+                          ${badgeClass}
+
+                        "
+
+                      >
+
+                        ${label}
+
+                      </div>
+
+
+
+                    </div>
+
+
+
+                  </div>
+
+
+
+                </article>
+
+
+
+              \`;
+
+
+
+            }
+
+          )
+
+          .join("");
+
+
+
+    }
+
+
+
+
+
+    // =====================================================
+
+    // PAYMENT
+
+    // =====================================================
+
+
+
+    function setupPayment(
+
+      received,
+
+      paid
+
+    ) {
+
+
+
+      const net =
+
+        paid -
+
+        received;
+
+
+
+
+
+      const payBox =
+
+        document.getElementById(
+
+          "payBox"
+
+        );
+
+
+
+
+
+      const upiBtn =
+
+        document.getElementById(
+
+          "upiBtn"
+
+        );
+
+
+
+
+
+      const qrBtn =
+
+        document.getElementById(
+
+          "qrBtn"
+
+        );
+
+
+
+
+
+      const qrArea =
+
+        document.getElementById(
+
+          "qrArea"
+
+        );
+
+
+
+
+
+      // RESET
+
+
+
+      payBox.classList.add(
+
         "hidden"
+
       );
 
 
+
+
+
+      upiBtn.classList.add(
+
+        "hidden"
+
+      );
+
+
+
+
+
+      qrBtn.classList.add(
+
+        "hidden"
+
+      );
+
+
+
+
+
+      qrArea.classList.add(
+
+        "hidden"
+
+      );
+
+
+
+
+
+      qrBtn.setAttribute(
+
+        "aria-expanded",
+
+        "false"
+
+      );
+
+
+
+
+
+      qrBtn.textContent =
+
+        "Show QR Code";
+
+
+
+
+
+      mainQRCreated =
+
+        false;
+
+
+
+
+
+      document
+
+        .getElementById("qrCode")
+
+        .innerHTML =
+
+          "";
+
+
+
+
+
+      const business =
+
+        publicProfile.business;
+
+
+
+
+
+      /*
+
+       * Existing logic preserved:
+
+       *
+
+       * net < 0
+
+       * customer needs to pay.
+
+       */
+
+
+
+      if (
+
+        net >= 0
+
+      ) {
+
+
+
+        return;
+
+
+
+      }
+
+
+
+
+
+      const amount =
+
+        Math.abs(net);
+
+
+
+
+
+      const upi =
+
+        String(
+
+          business.upi_id ||
+
+          ""
+
+        ).trim();
+
+
+
+
+
+      const payeeName =
+
+        String(
+
+          business.payee_name ||
+
+          business.name ||
+
+          "Business"
+
+        ).trim();
+
+
+
+
+
+      /*
+
+       * If business has no UPI ID,
+
+       * do not show a broken Pay button.
+
+       */
+
+
+
+      if (!upi) {
+
+
+
+        return;
+
+
+
+      }
+
+
+
+
+
+      currentUPILink =
+
+        buildUPILink(
+
+          upi,
+
+          payeeName,
+
+          amount
+
+        );
+
+
+
+
+
+      document
+
+        .getElementById(
+
+          "paymentAmount"
+
+        )
+
+        .textContent =
+
+          formatMoney(amount);
+
+
+
+
+
+      document
+
+        .getElementById(
+
+          "qrPayee"
+
+        )
+
+        .textContent =
+
+          payeeName;
+
+
+
+
+
+      payBox.classList.remove(
+
+        "hidden"
+
+      );
+
+
+
+
+
       const isMobile =
+
         /Android|iPhone|iPad|iPod/i
+
           .test(
+
             navigator.userAgent
+
           );
+
+
+
 
 
       if (isMobile) {
 
+
+
         upiBtn.href =
+
           currentUPILink;
 
 
+
+
+
         upiBtn.classList.remove(
+
           "hidden"
+
         );
 
+
+
       }
+
+
 
       else {
 
+
+
         qrBtn.classList.remove(
+
           "hidden"
+
         );
+
+
 
       }
 
+
+
     }
+
+
+
 
 
     function buildUPILink(
+
       upi,
+
       payeeName,
+
       amount
+
     ) {
 
+
+
       const params =
+
         new URLSearchParams();
 
 
+
+
+
       params.set(
+
         "pa",
+
         upi
+
       );
 
 
+
+
+
       params.set(
+
         "pn",
+
         payeeName
+
       );
 
 
+
+
+
       params.set(
+
         "am",
+
         String(
+
           Math.round(amount)
+
         )
+
       );
+
+
+
 
 
       params.set(
+
         "cu",
+
         "INR"
+
       );
+
+
+
 
 
       return (
+
         "upi://pay?" +
+
         params.toString()
+
       );
+
+
 
     }
 
 
+
+
+
     // =====================================================
+
     // LOCAL QR GENERATION
+
     // =====================================================
+
+
 
     function createLocalQR(
       containerId,
@@ -3077,6 +6343,40 @@
       );
 
 
+      /*
+       * First preference:
+       * use the QR image configured for this business.
+       */
+      const configuredQR =
+        String(
+          publicProfile.business
+            .qr_image ||
+          ""
+        ).trim();
+
+
+      if (configuredQR) {
+
+        fallbackImage.src =
+          configuredQR;
+
+
+        fallbackImage.classList.remove(
+          "hidden"
+        );
+
+
+        return true;
+
+      }
+
+
+      /*
+       * Fallback:
+       * generate the UPI QR locally in this browser.
+       * The UPI payment URI is not sent to a remote
+       * QR-generation service.
+       */
       if (
         typeof QRCode !==
         "undefined"
@@ -3105,488 +6405,908 @@
       }
 
 
-      /*
-       * If QR library fails to load,
-       * use the QR image already configured
-       * in the Business sheet.
-       */
-
-      const fallbackURL =
-        String(
-          publicProfile.business
-            .qr_image ||
-          ""
-        ).trim();
-
-
-      if (fallbackURL) {
-
-        fallbackImage.src =
-          fallbackURL;
-
-
-        fallbackImage.classList.remove(
-          "hidden"
-        );
-
-
-        return true;
-
-      }
-
-
       return false;
 
     }
 
 
+
     function showQR() {
 
+
+
       const area =
+
         document.getElementById(
+
           "qrArea"
+
         );
+
+
+
 
 
       const button =
+
         document.getElementById(
+
           "qrBtn"
+
         );
+
+
+
 
 
       const isHidden =
+
         area.classList.contains(
+
           "hidden"
+
         );
+
+
+
 
 
       if (isHidden) {
 
+
+
         if (!mainQRCreated) {
 
+
+
           mainQRCreated =
+
             createLocalQR(
+
               "qrCode",
+
               "qrFallbackImage"
+
             );
 
+
+
         }
+
+
+
 
 
         area.classList.remove(
+
           "hidden"
+
         );
 
 
+
+
+
         button.textContent =
+
           "Hide QR Code";
 
 
+
+
+
         button.setAttribute(
+
           "aria-expanded",
+
           "true"
+
         );
+
+
 
       }
 
+
+
       else {
 
+
+
         area.classList.add(
+
           "hidden"
+
         );
+
+
+
 
 
         button.textContent =
+
           "Show QR Code";
 
 
+
+
+
         button.setAttribute(
+
           "aria-expanded",
+
           "false"
+
         );
 
+
+
       }
+
+
 
     }
 
 
+
+
+
     // =====================================================
+
     // PDF
+
     // =====================================================
+
+
 
     function downloadPDF() {
 
+
+
       window.print();
+
+
 
     }
 
 
-    // =====================================================
-    // MOBILE FOOTER
+
+
+
     // =====================================================
 
+    // MOBILE FOOTER
+
+    // =====================================================
+
+
+
     let lastScroll =
+
       0;
 
 
+
+
+
     const mobileFooter =
+
       document.getElementById(
+
         "mobileFooter"
+
       );
+
+
+
 
 
     window.addEventListener(
+
       "scroll",
+
       () => {
 
+
+
         const current =
+
           window.pageYOffset;
 
 
+
+
+
         if (
+
           current > lastScroll &&
+
           current > 80
+
         ) {
 
+
+
           mobileFooter.style.transform =
+
             "translateY(110%)";
 
+
+
         }
+
+
 
         else {
 
+
+
           mobileFooter.style.transform =
+
             "translateY(0)";
 
+
+
         }
+
+
+
 
 
         lastScroll =
+
           Math.max(
+
             current,
+
             0
+
           );
 
+
+
       },
+
       {
+
         passive: true
+
       }
+
     );
 
 
+
+
+
     function updateMobileFooter(
+
       received,
+
       paid
+
     ) {
 
+
+
       const net =
+
         paid -
+
         received;
 
 
+
+
+
       const text =
+
         document.getElementById(
+
           "footerText"
+
         );
+
+
+
 
 
       const button =
+
         document.getElementById(
+
           "footerPayBtn"
+
         );
 
 
+
+
+
       button.classList.add(
+
         "hidden"
+
       );
 
 
+
+
+
       button.onclick =
+
         null;
 
 
+
+
+
       if (
+
         net < 0
+
       ) {
 
+
+
         const amount =
+
           Math.abs(net);
 
 
+
+
+
         text.textContent =
-          `Pay ${formatMoney(amount)}`;
+
+          \`Pay ${formatMoney(amount)}\`;
+
+
+
 
 
         /*
+
          * Only show Pay Now when
+
          * business actually has UPI configured.
+
          */
 
+
+
         if (
+
           publicProfile.business
+
             .upi_id
+
         ) {
 
+
+
           button.classList.remove(
+
             "hidden"
+
           );
 
 
+
+
+
           button.onclick =
+
             () =>
+
               openPaymentDrawer(
+
                 amount
+
               );
+
+
 
         }
 
+
+
       }
+
+
 
       else if (
+
         net > 0
+
       ) {
 
+
+
         text.textContent =
-          `You’ll get ${formatMoney(net)}`;
+
+          \`You’ll get ${formatMoney(net)}\`;
+
+
 
       }
+
+
 
       else {
 
+
+
         text.textContent =
+
           "Settled";
 
+
+
       }
+
+
 
     }
 
 
+
+
+
     // =====================================================
+
     // MOBILE PAYMENT DRAWER
+
     // =====================================================
+
+
 
     function openPaymentDrawer(
+
       amount
+
     ) {
 
+
+
       const business =
+
         publicProfile.business;
 
 
+
+
+
       const upi =
+
         String(
+
           business.upi_id ||
+
           ""
+
         ).trim();
+
+
+
 
 
       if (!upi) {
 
+
+
         return;
+
+
 
       }
 
 
+
+
+
       const payeeName =
+
         String(
+
           business.payee_name ||
+
           business.name ||
+
           "Business"
+
         ).trim();
 
 
+
+
+
       currentUPILink =
+
         buildUPILink(
+
           upi,
+
           payeeName,
+
           amount
+
         );
 
 
+
+
+
       document
+
         .getElementById(
+
           "drawerAmount"
+
         )
+
         .textContent =
+
           formatMoney(amount);
 
 
+
+
+
       document
+
         .getElementById(
+
           "drawerPayee"
+
         )
+
         .textContent =
+
           payeeName;
 
 
+
+
+
       document
+
         .getElementById(
+
           "drawerPayBtn"
+
         )
+
         .href =
+
           currentUPILink;
 
 
+
+
+
       document
+
         .getElementById(
+
           "drawerQRArea"
+
         )
+
         .classList.add(
+
           "hidden"
+
         );
 
 
+
+
+
       document
+
         .getElementById(
+
           "drawerQrBtn"
+
         )
+
         .textContent =
+
           "Show QR Code";
 
 
+
+
+
       document
+
         .getElementById(
+
           "drawerQrBtn"
+
         )
+
         .setAttribute(
+
           "aria-expanded",
+
           "false"
+
         );
 
 
+
+
+
       document
+
         .getElementById(
+
           "drawerQR"
+
         )
+
         .innerHTML =
+
           "";
 
 
+
+
+
       drawerQRCreated =
+
         false;
 
 
+
+
+
       document
+
         .getElementById(
+
           "paymentDrawer"
+
         )
+
         .style.transform =
+
           "translateY(0)";
 
+
+
     }
+
+
+
 
 
     function closeDrawer() {
 
+
+
       document
+
         .getElementById(
+
           "paymentDrawer"
+
         )
+
         .style.transform =
+
           "translateY(100%)";
 
+
+
     }
+
+
+
 
 
     function toggleDrawerQR() {
 
+
+
       const area =
+
         document.getElementById(
+
           "drawerQRArea"
+
         );
+
+
+
 
 
       const button =
+
         document.getElementById(
+
           "drawerQrBtn"
+
         );
+
+
+
 
 
       const isHidden =
+
         area.classList.contains(
+
           "hidden"
+
         );
+
+
+
 
 
       if (isHidden) {
 
+
+
         if (!drawerQRCreated) {
 
+
+
           drawerQRCreated =
+
             createLocalQR(
+
               "drawerQR",
+
               "drawerQRFallback"
+
             );
+
+
 
         }
 
 
+
+
+
         area.classList.remove(
+
           "hidden"
+
         );
 
 
+
+
+
         button.textContent =
+
           "Hide QR Code";
 
 
+
+
+
         button.setAttribute(
+
           "aria-expanded",
+
           "true"
+
         );
 
+
+
       }
+
+
 
       else {
 
+
+
         area.classList.add(
+
           "hidden"
+
         );
+
+
+
 
 
         button.textContent =
+
           "Show QR Code";
 
 
+
+
+
         button.setAttribute(
+
           "aria-expanded",
+
           "false"
+
         );
 
+
+
       }
+
+
 
     }
 
 
+
+
+
     // =====================================================
+
     // ESC KEY CLOSES DRAWER
+
     // =====================================================
+
+
 
     document.addEventListener(
+
       "keydown",
+
       event => {
 
+
+
         if (
+
           event.key ===
+
           "Escape"
+
         ) {
+
+
 
           closeDrawer();
 
+
+
         }
 
+
+
       }
+
     );
 
 
+
+
+
     // =====================================================
+
     // START
+
     // =====================================================
+
+
 
     loadSummary();
 
+
+
   </script>
 
+
+
 </body>
+
+
 
 </html>

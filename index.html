@@ -736,13 +736,11 @@ Copy Paste Full Code
     </div>
   </div>
 
-<!-- =====================================================
+  <!-- =====================================================
      USERS & ACCESS MODAL
 ===================================================== -->
 
-<div
-  id="usersAccessModal"
-  class="
+  <div id="usersAccessModal" class="
     fixed
     inset-0
     hidden
@@ -752,14 +750,12 @@ Copy Paste Full Code
     backdrop-blur-sm
     z-[100]
     p-3
-  "
->
+  ">
 
-  <!-- =================================================
+    <!-- =================================================
        MODAL SHELL
   ================================================== -->
-  <div
-    class="
+    <div class="
       bg-[#0b1220]
       border
       border-gray-700
@@ -772,14 +768,12 @@ Copy Paste Full Code
       flex
       flex-col
       overflow-hidden
-    "
-  >
+    ">
 
-    <!-- =================================================
+      <!-- =================================================
          HEADER
     ================================================== -->
-    <div
-      class="
+      <div class="
         shrink-0
         flex
         items-center
@@ -789,39 +783,31 @@ Copy Paste Full Code
         py-4
         border-b
         border-gray-800
-      "
-    >
+      ">
 
-      <div>
+        <div>
 
-        <div
-          class="
+          <div class="
             text-lg
             font-semibold
             text-white
-          "
-        >
-          🛡️ Users & Access
-        </div>
+          ">
+            🛡️ Users & Access
+          </div>
 
-        <div
-          class="
+          <div class="
             text-xs
             text-gray-500
             mt-1
-          "
-        >
-          Manage roles, businesses and permissions
+          ">
+            Manage roles, businesses and permissions
+          </div>
+
         </div>
 
-      </div>
 
-
-      <!-- CLOSE -->
-      <button
-        type="button"
-        onclick="closeUsersAccess()"
-        class="
+        <!-- CLOSE -->
+        <button type="button" onclick="closeUsersAccess()" class="
           w-10
           h-10
           shrink-0
@@ -832,50 +818,43 @@ Copy Paste Full Code
           flex
           items-center
           justify-center
-        "
-      >
-        ✕
-      </button>
+        ">
+          ✕
+        </button>
 
-    </div>
+      </div>
 
 
-    <!-- =================================================
+      <!-- =================================================
          BODY
     ================================================== -->
-    <div
-      class="
+      <div class="
         flex-1
         min-h-0
         flex
         overflow-hidden
-      "
-    >
+      ">
 
 
-      <!-- =================================================
+        <!-- =================================================
            LEFT SIDE — USER LIST
       ================================================== -->
-      <div
-        id="accessUserListPanel"
-        class="
-          w-full
-          md:w-[40%]
-          md:max-w-[410px]
-          shrink-0
-          border-r
-          border-gray-800
-          flex
-          flex-col
-          min-h-0
-        "
-      >
+        <div id="accessUserListPanel" class="
+    w-full
+    md:w-[40%]
+    md:max-w-[410px]
+    shrink-0
+    border-r
+    border-gray-800
+    flex
+    flex-col
+    min-h-0
+  ">
 
-        <!-- =============================================
+          <!-- =============================================
              USER LIST HEADER
         ============================================== -->
-        <div
-          class="
+          <div class="
             shrink-0
             flex
             items-center
@@ -884,26 +863,19 @@ Copy Paste Full Code
             p-4
             border-b
             border-gray-800
-          "
-        >
+          ">
 
-          <div
-            class="
+            <div class="
               text-sm
               font-semibold
               text-gray-200
-            "
-          >
-            Users
-          </div>
+            ">
+              Users
+            </div>
 
 
-          <!-- ADD USER -->
-          <button
-            id="addAccessUserBtn"
-            type="button"
-            onclick="newAccessUser()"
-            class="
+            <!-- ADD USER -->
+            <button id="addAccessUserBtn" type="button" onclick="newAccessUser()" class="
               bg-green-600
               hover:bg-green-500
               text-white
@@ -913,58 +885,51 @@ Copy Paste Full Code
               text-xs
               font-semibold
               whitespace-nowrap
-            "
-          >
-            + Add User
-          </button>
+            ">
+              + Add User
+            </button>
 
-        </div>
+          </div>
 
 
-        <!-- =============================================
+          <!-- =============================================
              USER LIST
         ============================================== -->
-        <div
-          id="accessUserList"
-          class="
+          <div id="accessUserList" class="
             flex-1
             min-h-0
             overflow-y-auto
             p-3
             space-y-2
-          "
-        >
+          ">
+          </div>
+
         </div>
 
-      </div>
 
-
-      <!-- =================================================
+        <!-- =================================================
            RIGHT SIDE
 
            Empty state and editor share this container.
       ================================================== -->
-      <div
-        id="accessRightPanel"
-        class="
-          hidden
-          md:flex
-          flex-1
-          min-w-0
-          min-h-0
-          relative
-          flex-col
-          bg-[#0b1220]
-        "
-      >
+        <div id="accessRightPanel" class="
+    hidden
+    md:flex
+    w-full
+    md:w-auto
+    flex-1
+    min-w-0
+    min-h-0
+    relative
+    flex-col
+    bg-[#0b1220]
+  ">
 
 
-        <!-- =============================================
+          <!-- =============================================
              EMPTY STATE
         ============================================== -->
-        <div
-          id="accessEmptyState"
-          class="
+          <div id="accessEmptyState" class="
             flex
             absolute
             inset-0
@@ -972,83 +937,70 @@ Copy Paste Full Code
             justify-center
             p-6
             text-center
-          "
-        >
+          ">
 
-          <div>
+            <div>
 
-            <div
-              class="
+              <div class="
                 text-4xl
                 mb-3
-              "
-            >
-              👤
-            </div>
+              ">
+                👤
+              </div>
 
 
-            <div
-              class="
+              <div class="
                 text-gray-300
                 font-medium
-              "
-            >
-              Select a user
-            </div>
+              ">
+                Select a user
+              </div>
 
 
-            <div
-              class="
+              <div class="
                 text-xs
                 text-gray-500
                 mt-2
-              "
-            >
-              Choose Manage or add a new user.
+              ">
+                Choose Manage or add a new user.
+              </div>
+
             </div>
 
           </div>
 
-        </div>
 
-
-        <!-- =================================================
+          <!-- =================================================
              USER EDITOR
         ================================================== -->
-        <div
-          id="accessEditor"
-          class="
+          <div id="accessEditor" class="
             hidden
             absolute
             inset-0
             flex-col
             min-h-0
             bg-[#0b1220]
-          "
-        >
+          ">
 
 
-          <!-- =============================================
+            <!-- =============================================
                SCROLLABLE EDITOR CONTENT
 
                Password / Role / Businesses / Permissions
                are rendered here by auth.js.
           ============================================== -->
-          <div
-            id="accessEditorScroll"
-            class="
+            <div id="accessEditorScroll" class="
               flex-1
               min-h-0
               overflow-y-auto
               overscroll-contain
               p-5
               pb-8
-            "
-          >
-          </div>
+            ">
+            </div>
 
 
-          <!-- =================================================
+            <!-- =================================================
                FIXED EDITOR FOOTER
 
                This section does NOT scroll.
@@ -1059,9 +1011,7 @@ Copy Paste Full Code
                New User:
                                   Cancel | Save Access
           ================================================== -->
-          <div
-            id="accessEditorFooter"
-            class="
+            <div id="accessEditorFooter" class="
               hidden
               shrink-0
               border-t
@@ -1069,32 +1019,24 @@ Copy Paste Full Code
               bg-[#0b1220]
               px-5
               py-4
-            "
-          >
+            ">
 
-            <div
-              class="
+              <div class="
                 flex
                 items-center
                 justify-between
                 gap-3
-              "
-            >
+              ">
 
 
-              <!-- =========================================
+                <!-- =========================================
                    LEFT SIDE — DELETE USER
               ========================================== -->
-              <div
-                class="
+                <div class="
                   shrink-0
-                "
-              >
+                ">
 
-                <button
-                  id="deleteAccessUserBtn"
-                  type="button"
-                  class="
+                  <button id="deleteAccessUserBtn" type="button" class="
                     hidden
                     bg-red-600
                     hover:bg-red-500
@@ -1107,32 +1049,26 @@ Copy Paste Full Code
                     text-sm
                     font-semibold
                     whitespace-nowrap
-                  "
-                >
-                  🗑 Delete User
-                </button>
+                  ">
+                    🗑 Delete User
+                  </button>
 
-              </div>
+                </div>
 
 
-              <!-- =========================================
+                <!-- =========================================
                    RIGHT SIDE — CANCEL + SAVE
               ========================================== -->
-              <div
-                class="
+                <div class="
                   flex
                   items-center
                   justify-end
                   gap-2
                   ml-auto
-                "
-              >
+                ">
 
-                <!-- CANCEL -->
-                <button
-                  type="button"
-                  onclick="showAccessEmptyState()"
-                  class="
+                  <!-- CANCEL -->
+                  <button type="button" onclick="showAccessEmptyState()" class="
                     bg-gray-800
                     hover:bg-gray-700
                     text-white
@@ -1142,17 +1078,13 @@ Copy Paste Full Code
                     text-sm
                     font-medium
                     whitespace-nowrap
-                  "
-                >
-                  Cancel
-                </button>
+                  ">
+                    Cancel
+                  </button>
 
 
-                <!-- SAVE ACCESS -->
-                <button
-                  id="saveAccessBtn"
-                  type="button"
-                  class="
+                  <!-- SAVE ACCESS -->
+                  <button id="saveAccessBtn" type="button" class="
                     bg-blue-600
                     hover:bg-blue-500
                     disabled:opacity-50
@@ -1164,37 +1096,36 @@ Copy Paste Full Code
                     text-sm
                     font-semibold
                     whitespace-nowrap
-                  "
-                >
-                  Save Access
-                </button>
+                  ">
+                    Save Access
+                  </button>
+
+                </div>
 
               </div>
 
             </div>
+            <!-- END FIXED EDITOR FOOTER -->
+
 
           </div>
-          <!-- END FIXED EDITOR FOOTER -->
+          <!-- END USER EDITOR -->
 
 
         </div>
-        <!-- END USER EDITOR -->
+        <!-- END RIGHT SIDE -->
 
 
       </div>
-      <!-- END RIGHT SIDE -->
+      <!-- END BODY -->
 
 
     </div>
-    <!-- END BODY -->
+    <!-- END MODAL SHELL -->
 
 
   </div>
-  <!-- END MODAL SHELL -->
-
-
-</div>
-<!-- END USERS & ACCESS MODAL -->
+  <!-- END USERS & ACCESS MODAL -->
 
 </body>
 

@@ -1120,6 +1120,46 @@ function showAccessEmptyState() {
 
   }
 
+  /*
+ * MOBILE USERS & ACCESS
+ *
+ * Returning from Add/Edit should show
+ * the user list again.
+ */
+  if (window.innerWidth <= 768) {
+
+    const listPanel =
+      document.getElementById(
+        "accessUserListPanel"
+      );
+
+    const rightPanel =
+      document.getElementById(
+        "accessRightPanel"
+      );
+
+    if (listPanel) {
+
+      listPanel.classList.remove(
+        "hidden"
+      );
+
+    }
+
+    if (rightPanel) {
+
+      rightPanel.classList.add(
+        "hidden"
+      );
+
+      rightPanel.classList.remove(
+        "flex"
+      );
+
+    }
+
+  }
+
 }
 
 
@@ -1219,10 +1259,10 @@ function renderAccessEditor(user) {
       "saveAccessBtn"
     );
 
-const deleteButton =
-  document.getElementById(
-    "deleteAccessUserBtn"
-  );
+  const deleteButton =
+    document.getElementById(
+      "deleteAccessUserBtn"
+    );
 
 
   if (!editor || !scroll) {
@@ -1245,6 +1285,35 @@ const deleteButton =
     rightPanel.classList.remove(
       "hidden"
     );
+
+    rightPanel.classList.add(
+      "flex"
+    );
+
+  }
+
+
+  /*
+   * MOBILE USERS & ACCESS
+   *
+   * Desktop keeps the existing two-column layout.
+   * On mobile, hide the user list while editing
+   * so the editor gets the full screen width.
+   */
+  if (window.innerWidth <= 768) {
+
+    const listPanel =
+      document.getElementById(
+        "accessUserListPanel"
+      );
+
+    if (listPanel) {
+
+      listPanel.classList.add(
+        "hidden"
+      );
+
+    }
 
   }
 
@@ -1293,8 +1362,8 @@ const deleteButton =
       user.businesses
     )
       ? user.businesses.map(
-          String
-        )
+        String
+      )
       : [];
 
 
@@ -1324,9 +1393,31 @@ const deleteButton =
       "
     >
 
-      <!-- TITLE -->
+<!-- MOBILE BACK -->
 
-      <div>
+<div class="md:hidden">
+
+  <button
+    type="button"
+    onclick="showAccessEmptyState()"
+    class="
+      bg-gray-800
+      text-gray-200
+      px-3
+      py-2
+      rounded-lg
+      text-sm
+    "
+  >
+    ← Users
+  </button>
+
+</div>
+
+
+<!-- TITLE -->
+
+<div>
 
         <div
           class="
@@ -1335,11 +1426,10 @@ const deleteButton =
             text-white
           "
         >
-          ${
-            user.id
-              ? "Edit User"
-              : "Add User"
-          }
+          ${user.id
+      ? "Edit User"
+      : "Add User"
+    }
         </div>
 
 
@@ -1379,8 +1469,8 @@ const deleteButton =
           type="text"
 
           value="${escapeAccessHtml(
-            user.username || ""
-          )}"
+      user.username || ""
+    )}"
 
           class="
             w-full
@@ -1423,11 +1513,10 @@ const deleteButton =
 
           autocomplete="new-password"
 
-          placeholder="${
-            user.username
-              ? "Leave blank to keep existing password"
-              : "Enter password"
-          }"
+          placeholder="${user.username
+      ? "Leave blank to keep existing password"
+      : "Enter password"
+    }"
 
           class="
             w-full
@@ -1444,9 +1533,8 @@ const deleteButton =
         />
 
 
-        ${
-          user.username
-            ? `
+        ${user.username
+      ? `
 
               <div
                 class="
@@ -1459,8 +1547,8 @@ const deleteButton =
               </div>
 
             `
-            : ""
-        }
+      : ""
+    }
 
       </div>
 
@@ -1499,34 +1587,33 @@ const deleteButton =
         >
 
           ${[
-            "owner",
-            "admin",
-            "manager",
-            "staff",
-            "viewer"
-          ]
-            .map(role => `
+      "owner",
+      "admin",
+      "manager",
+      "staff",
+      "viewer"
+    ]
+      .map(role => `
 
               <option
                 value="${role}"
 
-                ${
-                  normalizeRole(
-                    user.role
-                  ) === role
-                    ? "selected"
-                    : ""
-                }
+                ${normalizeRole(
+        user.role
+      ) === role
+          ? "selected"
+          : ""
+        }
               >
 
                 ${getRoleDisplayName(
-                  role
-                )}
+          role
+        )}
 
               </option>
 
             `)
-            .join("")}
+      .join("")}
 
         </select>
 
@@ -1587,11 +1674,10 @@ const deleteButton =
             id="accessActive"
             type="checkbox"
 
-            ${
-              user.active !== false
-                ? "checked"
-                : ""
-            }
+            ${user.active !== false
+      ? "checked"
+      : ""
+    }
 
             class="
               w-5
@@ -1646,12 +1732,11 @@ const deleteButton =
             id="accessAllBusinesses"
             type="checkbox"
 
-            ${
-              selectedBusinesses
-                .includes("*")
-                ? "checked"
-                : ""
-            }
+            ${selectedBusinesses
+      .includes("*")
+      ? "checked"
+      : ""
+    }
           />
 
 
@@ -1681,16 +1766,16 @@ const deleteButton =
         >
 
           ${businesses
-            .map(
-              business => {
+      .map(
+        business => {
 
-                const businessId =
-                  String(
-                    business.id
-                  );
+          const businessId =
+            String(
+              business.id
+            );
 
 
-                return `
+          return `
 
                   <label
                     class="
@@ -1706,17 +1791,16 @@ const deleteButton =
                       type="checkbox"
 
                       data-access-business="${escapeAccessHtml(
-                        businessId
-                      )}"
+            businessId
+          )}"
 
-                      ${
-                        selectedBusinesses
-                          .includes(
-                            businessId
-                          )
-                            ? "checked"
-                            : ""
-                      }
+                      ${selectedBusinesses
+              .includes(
+                businessId
+              )
+              ? "checked"
+              : ""
+            }
                     />
 
 
@@ -1728,8 +1812,8 @@ const deleteButton =
                     >
 
                       ${escapeAccessHtml(
-                        business.name
-                      )}
+              business.name
+            )}
 
                     </span>
 
@@ -1737,9 +1821,9 @@ const deleteButton =
 
                 `;
 
-              }
-            )
-            .join("")}
+        }
+      )
+      .join("")}
 
         </div>
 
@@ -1751,8 +1835,8 @@ const deleteButton =
       ========================== -->
 
       ${LEDGER_PERMISSIONS
-        .map(
-          group => `
+      .map(
+        group => `
 
             <div
               class="
@@ -1774,15 +1858,15 @@ const deleteButton =
               >
 
                 ${escapeAccessHtml(
-                  group.group
-                )}
+          group.group
+        )}
 
               </div>
 
 
               ${group.items
-                .map(
-                  ([key, label]) => `
+            .map(
+              ([key, label]) => `
 
                     <label
                       class="
@@ -1798,17 +1882,16 @@ const deleteButton =
                         type="checkbox"
 
                         data-access-permission="${escapeAccessHtml(
-                          key
-                        )}"
+                key
+              )}"
 
-                        ${
-                          allPermissions ||
-                          permissions.includes(
-                            key
-                          )
-                            ? "checked"
-                            : ""
-                        }
+                        ${allPermissions ||
+                  permissions.includes(
+                    key
+                  )
+                  ? "checked"
+                  : ""
+                }
                       />
 
 
@@ -1820,22 +1903,22 @@ const deleteButton =
                       >
 
                         ${escapeAccessHtml(
-                          label
-                        )}
+                  label
+                )}
 
                       </span>
 
                     </label>
 
                   `
-                )
-                .join("")}
+            )
+            .join("")}
 
             </div>
 
           `
-        )
-        .join("")}
+      )
+      .join("")}
 
 
       <!-- BOTTOM SPACE -->
@@ -1868,77 +1951,77 @@ const deleteButton =
    DELETE USER BUTTON
 ================================= */
 
-if (deleteButton) {
+  if (deleteButton) {
 
-  const isExistingUser =
-    !!user.id &&
-    !!user.username;
+    const isExistingUser =
+      !!user.id &&
+      !!user.username;
 
-  const isOwner =
-    normalizeRole(
-      user.role
-    ) === "owner";
+    const isOwner =
+      normalizeRole(
+        user.role
+      ) === "owner";
 
-  const isCurrentUser =
-    String(
-      user.username || ""
-    )
-      .trim()
-      .toLowerCase() ===
-    String(
-      getLoggedInUsername() || ""
-    )
-      .trim()
-      .toLowerCase();
+    const isCurrentUser =
+      String(
+        user.username || ""
+      )
+        .trim()
+        .toLowerCase() ===
+      String(
+        getLoggedInUsername() || ""
+      )
+        .trim()
+        .toLowerCase();
 
 
-  /*
-   * Delete is available only for:
-   *
-   * - existing users
-   * - non-owner users
-   * - not the currently logged-in user
-   */
-  if (
-    isExistingUser &&
-    !isOwner &&
-    !isCurrentUser
-  ) {
+    /*
+     * Delete is available only for:
+     *
+     * - existing users
+     * - non-owner users
+     * - not the currently logged-in user
+     */
+    if (
+      isExistingUser &&
+      !isOwner &&
+      !isCurrentUser
+    ) {
 
-    deleteButton.classList.remove(
-      "hidden"
-    );
+      deleteButton.classList.remove(
+        "hidden"
+      );
 
-    deleteButton.disabled =
-      false;
+      deleteButton.disabled =
+        false;
 
-    deleteButton.onclick =
-      () => {
+      deleteButton.onclick =
+        () => {
 
-        deleteAccessUser(
-          user.id,
-          user.username,
-          user.role
-        );
+          deleteAccessUser(
+            user.id,
+            user.username,
+            user.role
+          );
 
-      };
+        };
+
+    }
+    else {
+
+      deleteButton.classList.add(
+        "hidden"
+      );
+
+      deleteButton.disabled =
+        true;
+
+      deleteButton.onclick =
+        null;
+
+    }
 
   }
-  else {
-
-    deleteButton.classList.add(
-      "hidden"
-    );
-
-    deleteButton.disabled =
-      true;
-
-    deleteButton.onclick =
-      null;
-
-  }
-
-}
 
 
   /* ================================
